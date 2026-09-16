@@ -23,7 +23,19 @@ Consult these guides before working on related tasks:
 
 ## Blog
 
-To publish an article from raw text and images, use the `blog-article` skill (`.claude/skills/blog-article/SKILL.md`): it translates, then runs `node scripts/article.mjs create <spec.json> --build`, which creates the folder, copies and resizes images, writes both language files and validates everything. `npm run article:check` validates all existing articles.
+### How to publish an article (recipe)
+
+When the user gives article text and/or images, or asks for a new article, ALWAYS follow the `blog-article` skill (`.claude/skills/blog-article/SKILL.md`). In short:
+
+1. `node scripts/article.mjs tags` and `node scripts/article.mjs index` to know the vocabulary and the existing articles.
+2. Your job is translation and judgment fields only: clean the source text, translate it faithfully to the other language, choose slug, titles (≤ 65 chars), descriptions (120–160 chars), 1–2 tags, and cross-links (in the new article and from 1–3 existing ones).
+3. Write a spec JSON in the scratchpad and run `node scripts/article.mjs create <spec.json> --build`. Never write `fr.md`/`en.md` by hand for a new article; the script owns the mechanics (images, frontmatter, validation, build).
+4. After inbound-link edits to existing articles, run `node scripts/article.mjs check` and `npm run build`.
+5. Report the two URLs. Commit and push only when asked (the deploy is automatic on push to main).
+
+The README has the human-facing version of this recipe. The rules below are what the build enforces.
+
+### Structure and rules
 
 Articles live in `src/content/blog/<slug>/`, one folder per article, and every article MUST ship in both languages:
 
