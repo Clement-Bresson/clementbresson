@@ -46,3 +46,141 @@ a {
     animation: none;
   }
 }
+
+/* Rendered markdown of blog articles. */
+.prose {
+  font: 400 17px/1.7 var(--font-geist);
+  color: var(--color-body);
+  text-wrap: pretty;
+}
+
+.prose > * + * {
+  margin-top: 1.25em;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-family: var(--font-newsreader);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.prose h2 {
+  margin-top: 2.2em;
+  font-size: 30px;
+}
+
+.prose h3 {
+  margin-top: 1.8em;
+  font-size: 24px;
+}
+
+.prose h4 {
+  margin-top: 1.6em;
+  font-size: 19px;
+}
+
+.prose a {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-inactive);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 120ms ease;
+}
+
+.prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+}
+
+.prose li + li {
+  margin-top: 0.4em;
+}
+
+.prose blockquote {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 1.2em;
+  border-left: 2px solid var(--color-inactive);
+  color: var(--color-muted);
+  font-family: var(--font-newsreader);
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.prose figure {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.prose figcaption {
+  margin-top: 0.6em;
+  font-size: 13.5px;
+  color: var(--color-inactive);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid #e5e5e5;
+  margin: 3em 0;
+}
+
+.prose code {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: #f4f4f4;
+  padding: 0.15em 0.35em;
+  border-radius: 3px;
+}
+
+.prose pre {
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 18px 20px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.prose pre code {
+  font-size: inherit;
+  background: none;
+  padding: 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.prose th,
+.prose td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.prose th {
+  font-weight: 500;
+  color: var(--color-ink);
+}

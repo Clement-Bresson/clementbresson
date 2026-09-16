@@ -1,28 +1,32 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import { linkOrder, links } from '../data/links';
-import type { Copy } from '../i18n';
+import type { Copy, Locale } from '../i18n';
 
 interface Props {
+  locale: Locale;
   labels: Copy['links'];
   delay: string;
 }
 
-const { labels, delay } = Astro.props;
+const { locale, labels, delay } = Astro.props;
 
 const isExternal = (href: string) => href.startsWith('http');
+const isInternal = (href: string) => !href.includes(':');
 ---
 
 <nav class="links rise" style={`--delay: ${delay}`}>
   {
     linkOrder.map((key) => {
       const href = links[key];
-      return isExternal(href) ? (
-        <a href={href} target="_blank" rel="noopener">
-          {labels[key]}
-        </a>
-      ) : (
-        <a href={href}>{labels[key]}</a>
-      );
+      if (isExternal(href)) {
+        return (
+          <a href={href} target="_blank" rel="noopener">
+            {labels[key]}
+          </a>
+        );
+      }
+      return <a href={isInternal(href) ? getRelativeLocaleUrl(locale, href) : href}>{labels[key]}</a>;
     })
   }
 </nav>

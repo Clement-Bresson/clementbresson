@@ -1,0 +1,316 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { tagCopy } from '../data/tags';
+import { getCopy } from '../i18n';
+import { blogPath, formatDate, getRelated, postPath, readingMinutes, type Post } from '../lib/blog';
+import LangToggle from './LangToggle.astro';
+import TagList from './TagList.astro';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { locale, data } = post;
+const t = getCopy(locale);
+const { Content } = await render(post);
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+const tags = data.tags.map((id) => ({ id, label: tagCopy(id, locale).label }));
+const minutes = readingMinutes(post.body);
+const related = await getRelated(post);
+---
+
+<LangToggle current={locale} label={t.langSwitchLabel} path={postPath(post.slug)} />
+
+<main class="page">
+  <article>
+    <header class="head">
+      <nav class="crumbs rise" aria-label="Breadcrumb">
+        <a href={getRelativeLocaleUrl(locale)}>{t.name}</a>
+        <span aria-hidden="true">/</span>
+        <a href={getRelativeLocaleUrl(locale, blogPath)}>{t.blog.title}</a>
+      </nav>
+      <h1 class="heading rise" style="--delay: 80ms">{data.title}</h1>
+      <p class="meta rise" style="--delay: 160ms">
+        <span>
+          <a href={getRelativeLocaleUrl(locale)} rel="author">{t.name}</a>
+          {' · '}
+        </span>
+        <span>
+          {t.blog.published}{' '}
+          <time datetime={iso(data.pubDate)}>{formatDate(data.pubDate, locale)}</time>
+        </span>
+        {
+          data.updatedDate && (
+            <span>
+              {' · '}
+              {t.blog.updated}{' '}
+              <time datetime={iso(data.updatedDate)}>{formatDate(data.updatedDate, locale)}</time>
+            </span>
+          )
+        }
+        <span>{' · '}{minutes} {t.blog.minRead}</span>
+      </p>
+      {
+        data.cover && (
+          <Image
+            class="cover rise"
+            style="--delay: 240ms"
+            src={data.cover}
+            alt={data.coverAlt ?? ''}
+            widths={[640, 1280]}
+            sizes="(max-width: 680px) 100vw, 640px"
+            format="webp"
+            quality={82}
+            loading="eager"
+            fetchpriority="high"
+          />
+        )
+      }
+    </header>
+
+    <div class="prose rise" style="--delay: 320ms">
+      <Content />
+    </div>
+
+    {
+      data.sources.length > 0 && (
+        <section class="sources rise" style="--delay: 360ms" aria-labelledby="sources-title">
+          <h2 id="sources-title">{t.blog.sources}</h2>
+          <ul>
+            {data.sources.map((s) => (
+              <li>
+                {s.author && <span class="author">{s.author}, </span>}
+                {s.url ? (
+                  <a href={s.url} rel="noopener">
+                    {s.title}
+                  </a>
+                ) : (
+                  <cite>{s.title}</cite>
+                )}
+                {s.year && <span class="year"> ({s.year})</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <footer class="article-foot rise" style="--delay: 400ms">
+      {tags.length > 0 && <TagList locale={locale} tags={tags} label={t.blog.topics} />}
+      {
+        data.linkedin && (
+          <p class="origin">
+            <a href={data.linkedin} rel="noopener">
+              {t.blog.originallyOnLinkedIn}
+            </a>
+          </p>
+        )
+      }
+    </footer>
+  </article>
+
+  {
+    related.length > 0 && (
+      <aside class="related rise" style="--delay: 440ms" aria-labelledby="related-title">
+        <h2 id="related-title">{t.blog.related}</h2>
+        <ul>
+          {related.map((r) => (
+            <li>
+              <a href={getRelativeLocaleUrl(locale, postPath(r.slug))}>
+                <span class="related-title">{r.data.title}</span>
+                <span class="related-desc">{r.data.description}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )
+  }
+
+  <footer class="foot rise" style="--delay: 480ms">
+    <a href={getRelativeLocaleUrl(locale, blogPath)}>← {t.blog.backToBlog}</a>
+  </footer>
+</main>
+
+<style>
+  .page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 96px 24px 80px;
+    box-sizing: border-box;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 10px;
+    font: 400 14.5px/1 var(--font-geist);
+    color: var(--color-inactive);
+  }
+
+  .crumbs a,
+  .foot a,
+  .origin a {
+    color: var(--color-muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 3px;
+    transition: color 120ms ease;
+  }
+
+  .crumbs a:hover,
+  .foot a:hover,
+  .origin a:hover {
+    color: var(--color-ink);
+    border-bottom-color: currentColor;
+  }
+
+  .heading {
+    margin: 28px 0 0;
+    font: 400 40px/1.15 var(--font-newsreader);
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  .meta {
+    margin: 16px 0 0;
+    font: 400 13.5px/1.6 var(--font-geist);
+    color: var(--color-inactive);
+  }
+
+  .meta a {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+
+  .meta a:hover {
+    color: var(--color-ink);
+  }
+
+  .cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 40px 0 0;
+    border-radius: 4px;
+  }
+
+  .prose {
+    margin-top: 48px;
+  }
+
+  .sources {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .sources h2,
+  .related h2 {
+    margin: 0;
+    font: 400 13px/1 var(--font-geist);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-inactive);
+  }
+
+  .sources ul {
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+    font: 400 14.5px/1.6 var(--font-geist);
+    color: var(--color-body);
+  }
+
+  .sources li + li {
+    margin-top: 6px;
+  }
+
+  .sources a {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-inactive);
+    text-underline-offset: 3px;
+  }
+
+  .sources a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .sources cite {
+    font-style: italic;
+  }
+
+  .sources .year {
+    color: var(--color-inactive);
+  }
+
+  .article-foot {
+    margin-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .origin {
+    margin: 0;
+    font: 400 13.5px/1 var(--font-geist);
+  }
+
+  .related {
+    margin-top: 72px;
+    padding-top: 28px;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .related ul {
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related li + li {
+    margin-top: 22px;
+  }
+
+  .related a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .related-title {
+    display: block;
+    font: 400 21px/1.3 var(--font-newsreader);
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+    text-wrap: balance;
+    transition: color 120ms ease;
+  }
+
+  .related a:hover .related-title {
+    color: var(--color-hover);
+  }
+
+  .related-desc {
+    display: block;
+    margin-top: 5px;
+    font: 400 14px/1.6 var(--font-geist);
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+
+  .foot {
+    margin-top: 56px;
+    font: 400 14.5px/1 var(--font-geist);
+  }
+
+  @media (max-width: 400px) {
+    .heading {
+      font-size: 34px;
+    }
+  }
+</style>

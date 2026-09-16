@@ -7,6 +7,8 @@ export interface Copy {
   htmlLang: string;
   ogLocale: string;
   metaTitle: string;
+  /** Home page meta description, 120–160 characters. */
+  metaDescription: string;
   name: string;
   title: string;
   p1: string;
@@ -22,4 +24,23 @@ export interface Copy {
   };
   portraitAlt: string;
   langSwitchLabel: string;
+  blog: {
+    /** Page heading and breadcrumb label. */
+    title: string;
+    metaTitle: string;
+    /** Meta description of the index page and of the RSS feed. */
+    description: string;
+    empty: string;
+    backToBlog: string;
+    published: string;
+    updated: string;
+    rss: string;
+    /** Heading of the tag list on the index and label before tags on an article. */
+    topics: string;
+    related: string;
+    sources: string;
+    originallyOnLinkedIn: string;
+    /** Suffix after the number of minutes, e.g. "min read". */
+    minRead: string;
+  };
 }

@@ -1,15 +1,41 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
+import { latestPostDate, postLastModified } from './src/lib/post-dates.mjs';
 
 // Canonical origin, used for hreflang alternates and Open Graph URLs.
 // Override at build time with SITE_URL for previews or staging.
 const site = process.env.SITE_URL ?? 'https://clementbresson.com';
+
+// <lastmod> per article URL, from `updatedDate` (or `pubDate`) in the frontmatter.
+const lastModified = postLastModified();
+const latest = latestPostDate();
+const postUrl = /^\/(?:(fr)\/)?blog\/([^/]+)\/?$/;
+// Blog index and tag pages change whenever an article is published or updated.
+const listUrl = /^\/(?:fr\/)?blog\/(?:tag\/[^/]+\/?)?$/;
 
 // https://astro.build/config
 export default defineConfig({
   site,
   output: 'static',
   trailingSlash: 'ignore',
+  integrations: [
+    sitemap({
+      // Emits <xhtml:link rel="alternate" hreflang> pairs for /x and /fr/x.
+      i18n: { defaultLocale: 'en', locales: { en: 'en', fr: 'fr' } },
+      serialize(item) {
+        const path = new URL(item.url).pathname;
+        const m = path.match(postUrl);
+        if (m && m[2] !== 'tag') {
+          const date = lastModified.get(`${m[1] ?? 'en'}/${m[2]}`);
+          if (date) item.lastmod = date.toISOString();
+        } else if (listUrl.test(path) && latest) {
+          item.lastmod = latest.toISOString();
+        }
+        return item;
+      },
+    }),
+  ],
   i18n: {
     locales: ['en', 'fr'],
     defaultLocale: 'en',

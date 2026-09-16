@@ -1,0 +1,200 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getCopy, type Locale } from '../i18n';
+import { blogPath, filePath, formatDate, postPath, tagPath, type Post, type TagSummary } from '../lib/blog';
+import LangToggle from './LangToggle.astro';
+import TagList from './TagList.astro';
+
+interface Props {
+  locale: Locale;
+  posts: Post[];
+  /** All tags with published posts (index page) — rendered as the topics row. */
+  tags: TagSummary[];
+  /** When set, the page is a tag page: heading and intro come from the tag. */
+  tag?: TagSummary;
+}
+
+const { locale, posts, tags, tag } = Astro.props;
+const t = getCopy(locale);
+const path = tag ? tagPath(tag.id) : blogPath;
+const topics = tags.map((x) => ({ id: x.id, label: x.label, count: x.posts.length }));
+---
+
+<LangToggle current={locale} label={t.langSwitchLabel} path={path} />
+
+<main class="page">
+  <header class="head">
+    <nav class="crumbs rise" aria-label="Breadcrumb">
+      <a href={getRelativeLocaleUrl(locale)}>{t.name}</a>
+      {
+        tag && (
+          <>
+            <span aria-hidden="true">/</span>
+            <a href={getRelativeLocaleUrl(locale, blogPath)}>{t.blog.title}</a>
+          </>
+        )
+      }
+    </nav>
+    <h1 class="heading rise" style="--delay: 80ms">{tag ? tag.label : t.blog.title}</h1>
+    <p class="intro rise" style="--delay: 160ms">{tag ? tag.description : t.blog.description}</p>
+    {
+      !tag && tags.length > 0 && (
+        <div class="topics rise" style="--delay: 200ms">
+          <TagList locale={locale} tags={topics} label={t.blog.topics} />
+        </div>
+      )
+    }
+  </header>
+
+  {
+    posts.length === 0 ? (
+      <p class="empty rise" style="--delay: 240ms">
+        {t.blog.empty}
+      </p>
+    ) : (
+      <ol class="list rise" style="--delay: 240ms">
+        {posts.map((post) => (
+          <li class="item">
+            <a class="item-link" href={getRelativeLocaleUrl(locale, postPath(post.slug))}>
+              <time class="date" datetime={post.data.pubDate.toISOString().slice(0, 10)}>
+                {formatDate(post.data.pubDate, locale)}
+              </time>
+              <h2 class="item-title">{post.data.title}</h2>
+              <p class="item-desc">{post.data.description}</p>
+            </a>
+          </li>
+        ))}
+      </ol>
+    )
+  }
+
+  <footer class="foot rise" style="--delay: 320ms">
+    {
+      tag ? (
+        <a href={getRelativeLocaleUrl(locale, blogPath)}>← {t.blog.backToBlog}</a>
+      ) : (
+        <a href={filePath(locale, 'rss.xml')}>{t.blog.rss}</a>
+      )
+    }
+  </footer>
+</main>
+
+<style>
+  .page {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 96px 24px 80px;
+    box-sizing: border-box;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 10px;
+    font: 400 14.5px/1 var(--font-geist);
+    color: var(--color-inactive);
+  }
+
+  .crumbs a {
+    color: var(--color-muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 3px;
+    transition: color 120ms ease;
+  }
+
+  .crumbs a:hover {
+    color: var(--color-ink);
+    border-bottom-color: currentColor;
+  }
+
+  .heading {
+    margin: 28px 0 0;
+    font: 400 44px/1.1 var(--font-newsreader);
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  .intro {
+    margin: 16px 0 0;
+    font: 400 15.5px/1.7 var(--font-geist);
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+
+  .topics {
+    margin-top: 28px;
+  }
+
+  .empty {
+    margin: 56px 0 0;
+    font: 400 15.5px/1.7 var(--font-geist);
+    color: var(--color-muted);
+  }
+
+  .list {
+    list-style: none;
+    margin: 56px 0 0;
+    padding: 0;
+  }
+
+  .item + .item {
+    margin-top: 40px;
+  }
+
+  .item-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .date {
+    display: block;
+    font: 400 13px/1 var(--font-geist);
+    color: var(--color-inactive);
+  }
+
+  .item-title {
+    margin: 10px 0 0;
+    font: 400 26px/1.25 var(--font-newsreader);
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+    text-wrap: balance;
+    transition: color 120ms ease;
+  }
+
+  .item-link:hover .item-title {
+    color: var(--color-hover);
+  }
+
+  .item-desc {
+    margin: 8px 0 0;
+    font: 400 15px/1.65 var(--font-geist);
+    color: var(--color-body);
+    text-wrap: pretty;
+  }
+
+  .foot {
+    margin-top: 72px;
+    font: 400 13.5px/1 var(--font-geist);
+  }
+
+  .foot a {
+    color: var(--color-muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 3px;
+    transition: color 120ms ease;
+  }
+
+  .foot a:hover {
+    color: var(--color-ink);
+    border-bottom-color: currentColor;
+  }
+
+  @media (max-width: 400px) {
+    .heading {
+      font-size: 40px;
+    }
+  }
+</style>

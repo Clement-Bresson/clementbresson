@@ -1,0 +1,35 @@
+---
+import { getAbsoluteLocaleUrl } from 'astro:i18n';
+import BlogIndex from '../../../components/BlogIndex.astro';
+import Base from '../../../layouts/Base.astro';
+import { getCopy } from '../../../i18n';
+import { blogPath, getTags, tagPath, type TagSummary } from '../../../lib/blog';
+import { breadcrumbNode, tagPageNode } from '../../../lib/schema';
+
+export async function getStaticPaths() {
+  const tags = await getTags('en');
+  return tags.map((tag) => ({ params: { tag: tag.id }, props: { tag, tags } }));
+}
+
+const { tag, tags } = Astro.props as { tag: TagSummary; tags: TagSummary[] };
+const locale = 'en';
+const t = getCopy(locale);
+const schema = [
+  tagPageNode(Astro.site, locale, tag),
+  breadcrumbNode([
+    { name: t.name, url: getAbsoluteLocaleUrl(locale) },
+    { name: t.blog.title, url: getAbsoluteLocaleUrl(locale, blogPath) },
+    { name: tag.label, url: getAbsoluteLocaleUrl(locale, tagPath(tag.id)) },
+  ]),
+];
+---
+
+<Base
+  locale={locale}
+  path={tagPath(tag.id)}
+  title={`${tag.label} — ${t.blog.metaTitle}`}
+  description={tag.description}
+  schema={schema}
+>
+  <BlogIndex locale={locale} posts={tag.posts} tags={tags} tag={tag} />
+</Base>

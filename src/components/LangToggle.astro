@@ -5,20 +5,22 @@ import { locales, type Locale } from '../i18n';
 interface Props {
   current: Locale;
   label: string;
+  /** Locale-relative path of the current page so the toggle keeps the reader on the same page. */
+  path?: string;
 }
 
-const { current, label } = Astro.props;
+const { current, label, path = '' } = Astro.props;
 ---
 
 <nav class="toggle rise" aria-label={label} style="--delay: 640ms">
   {
     locales.map((l) =>
       l === current ? (
-        <a href={getRelativeLocaleUrl(l)} aria-current="page" hreflang={l} lang={l}>
+        <a href={getRelativeLocaleUrl(l, path)} aria-current="page" hreflang={l} lang={l}>
           {l.toUpperCase()}
         </a>
       ) : (
-        <a href={getRelativeLocaleUrl(l)} hreflang={l} lang={l}>
+        <a href={getRelativeLocaleUrl(l, path)} hreflang={l} lang={l}>
           {l.toUpperCase()}
         </a>
       ),

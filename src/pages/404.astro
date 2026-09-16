@@ -1,0 +1,69 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import Base from '../layouts/Base.astro';
+import { getCopy } from '../i18n';
+import { blogPath } from '../lib/blog';
+
+// Served by Cloudflare for any unknown path (`not_found_handling: 404-page`).
+// The path is unknown, so the page is bilingual and not indexable.
+const en = getCopy('en');
+const fr = getCopy('fr');
+---
+
+<Base locale="en" title={`404 — ${en.name}`} description="Page not found." noindex>
+  <main class="page">
+    <p class="code rise">404</p>
+    <h1 class="heading rise" style="--delay: 80ms">Page not found</h1>
+    <p class="body rise" style="--delay: 160ms">
+      <a href={getRelativeLocaleUrl('en')}>{en.name}</a> · <a href={getRelativeLocaleUrl('en', blogPath)}>{en.blog.title}</a>
+    </p>
+    <p class="body fr rise" lang="fr" style="--delay: 240ms">
+      Page introuvable. <a href={getRelativeLocaleUrl('fr')}>{fr.name}</a> · <a href={getRelativeLocaleUrl('fr', blogPath)}>{fr.blog.title}</a>
+    </p>
+  </main>
+</Base>
+
+<style>
+  .page {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .code {
+    margin: 0;
+    font: 400 13px/1 var(--font-geist);
+    letter-spacing: 0.08em;
+    color: var(--color-inactive);
+  }
+
+  .heading {
+    margin: 16px 0 0;
+    font: 400 40px/1.1 var(--font-newsreader);
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+
+  .body {
+    margin: 24px 0 0;
+    font: 400 15.5px/1.7 var(--font-geist);
+    color: var(--color-body);
+  }
+
+  .fr {
+    margin-top: 12px;
+    color: var(--color-muted);
+  }
+
+  .body a {
+    color: var(--color-ink);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+  }
+</style>

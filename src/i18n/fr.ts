@@ -4,6 +4,8 @@ export const fr: Copy = {
   htmlLang: 'fr',
   ogLocale: 'fr_FR',
   metaTitle: 'Clément Bresson — Tech Lead en temps partagé',
+  metaDescription:
+    'Un ingénieur fullstack senior sur votre projet 1 à 2 jours par semaine, sur la durée. Architecture, revues de code, harnais IA, design system.',
   name: 'Clément Bresson',
   title: 'Tech Lead en temps partagé',
   p1: 'Un ingénieur fullstack senior sur votre projet, 1 à 2 jours par semaine, aussi longtemps que nécessaire. La même personne, de confiance, sur des mois, sans le coût d’un temps plein.',
@@ -19,4 +21,20 @@ export const fr: Copy = {
   },
   portraitAlt: 'Portrait de Clément Bresson',
   langSwitchLabel: 'Langue',
+  blog: {
+    title: 'Blog',
+    metaTitle: 'Blog — Clément Bresson, Tech Lead en temps partagé',
+    description:
+      'Notes d’un tech lead en temps partagé : architecture logicielle, revues de code, harnais IA, design systems et encadrement de petites équipes de dev.',
+    empty: 'Rien de publié pour le moment.',
+    backToBlog: 'Tous les articles',
+    published: 'Publié le',
+    updated: 'Mis à jour le',
+    rss: 'Flux RSS',
+    topics: 'Thèmes',
+    related: 'À lire ensuite',
+    sources: 'Sources',
+    originallyOnLinkedIn: 'Publié à l’origine sur LinkedIn',
+    minRead: 'min de lecture',
+  },
 };
