@@ -1,0 +1,48 @@
+:root {
+  --color-bg: #ffffff;
+  --color-ink: #111111;
+  --color-body: #333333;
+  --color-muted: #666666;
+  --color-inactive: #999999;
+  --color-hover: #777777;
+}
+
+html {
+  background: var(--color-bg);
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-geist);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--color-ink);
+}
+
+/* Arrival animation: a quiet rise-and-fade, staggered per element. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 720ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+}

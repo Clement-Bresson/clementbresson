@@ -1,0 +1,58 @@
+---
+import { linkOrder, links } from '../data/links';
+import type { Copy } from '../i18n';
+
+interface Props {
+  labels: Copy['links'];
+  delay: string;
+}
+
+const { labels, delay } = Astro.props;
+
+const isExternal = (href: string) => href.startsWith('http');
+---
+
+<nav class="links rise" style={`--delay: ${delay}`}>
+  {
+    linkOrder.map((key) => {
+      const href = links[key];
+      return isExternal(href) ? (
+        <a href={href} target="_blank" rel="noopener">
+          {labels[key]}
+        </a>
+      ) : (
+        <a href={href}>{labels[key]}</a>
+      );
+    })
+  }
+</nav>
+
+<style>
+  .links {
+    margin-top: 40px;
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    font: 400 14.5px/1 var(--font-geist);
+  }
+
+  .links a {
+    color: var(--color-ink);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 3px;
+    transition: color 120ms ease;
+  }
+
+  .links a:hover {
+    color: var(--color-hover);
+  }
+
+  @media (max-width: 420px) {
+    .links {
+      flex-wrap: wrap;
+      row-gap: 14px;
+      justify-content: center;
+    }
+  }
+</style>

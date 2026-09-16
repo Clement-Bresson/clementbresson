@@ -1,0 +1,59 @@
+---
+import { Font } from 'astro:assets';
+import { getImage } from 'astro:assets';
+import { getAbsoluteLocaleUrl } from 'astro:i18n';
+import portrait from '../assets/portrait.png';
+import { getCopy, locales, type Locale } from '../i18n';
+import '../styles/global.css';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+
+const canonical = getAbsoluteLocaleUrl(locale);
+const ogImage = await getImage({ src: portrait, width: 1200, format: 'jpg', quality: 82 });
+const ogImageUrl = new URL(ogImage.src, Astro.site);
+const alternates = locales.map((l) => ({ locale: l, href: getAbsoluteLocaleUrl(l) }));
+---
+
+<html lang={t.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{t.metaTitle}</title>
+    <meta name="description" content={t.p1} />
+    <link rel="canonical" href={canonical} />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.locale} href={a.href} />)}
+    <link rel="alternate" hreflang="x-default" href={getAbsoluteLocaleUrl('en')} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={t.name} />
+    <meta property="og:title" content={t.metaTitle} />
+    <meta property="og:description" content={t.p1} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content={String(ogImage.attributes.width)} />
+    <meta property="og:image:height" content={String(ogImage.attributes.height)} />
+    <meta property="og:image:alt" content={t.portraitAlt} />
+    <meta property="og:locale" content={t.ogLocale} />
+    {locales
+      .filter((l) => l !== locale)
+      .map((l) => <meta property="og:locale:alternate" content={getCopy(l).ogLocale} />)}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={t.metaTitle} />
+    <meta name="twitter:description" content={t.p1} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <Font cssVariable="--font-newsreader" preload />
+    <Font cssVariable="--font-geist" preload />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

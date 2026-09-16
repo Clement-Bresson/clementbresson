@@ -1,0 +1,96 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait.png';
+import { getCopy, type Locale } from '../i18n';
+import LangToggle from './LangToggle.astro';
+import LinkRow from './LinkRow.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+---
+
+<LangToggle current={locale} label={t.langSwitchLabel} />
+
+<main class="page">
+  <Image
+    class="portrait rise"
+    src={portrait}
+    alt={t.portraitAlt}
+    width={168}
+    densities={[1, 2]}
+    format="webp"
+    quality={85}
+    loading="eager"
+    fetchpriority="high"
+    decoding="sync"
+  />
+  <h1 class="name rise" style="--delay: 80ms">{t.name}</h1>
+  <p class="title rise" style="--delay: 160ms">{t.title}</p>
+  <p class="body rise" style="--delay: 240ms">{t.p1}</p>
+  <p class="body rise" style="--delay: 320ms">{t.p2}</p>
+  <p class="body rise" style="--delay: 400ms">{t.p3}</p>
+  <p class="body closing rise" style="--delay: 480ms">{t.p4}</p>
+  <LinkRow labels={t.links} delay="560ms" />
+</main>
+
+<style>
+  .page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .portrait {
+    width: 168px;
+    height: 168px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: 50% 20%;
+    display: block;
+  }
+
+  .name {
+    margin: 36px 0 0;
+    font: 400 44px/1.1 var(--font-newsreader);
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+
+  .title {
+    margin: 12px 0 0;
+    font: 400 16px/1.5 var(--font-geist);
+    color: var(--color-muted);
+  }
+
+  .body {
+    margin: 18px 0 0;
+    max-width: 480px;
+    font: 400 15.5px/1.7 var(--font-geist);
+    color: var(--color-body);
+    text-wrap: pretty;
+  }
+
+  .title + .body {
+    margin-top: 32px;
+  }
+
+  .closing {
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 400px) {
+    .name {
+      font-size: 40px;
+    }
+  }
+</style>

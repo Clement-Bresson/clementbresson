@@ -1,0 +1,63 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { locales, type Locale } from '../i18n';
+
+interface Props {
+  current: Locale;
+  label: string;
+}
+
+const { current, label } = Astro.props;
+---
+
+<nav class="toggle rise" aria-label={label} style="--delay: 640ms">
+  {
+    locales.map((l) =>
+      l === current ? (
+        <a href={getRelativeLocaleUrl(l)} aria-current="page" hreflang={l} lang={l}>
+          {l.toUpperCase()}
+        </a>
+      ) : (
+        <a href={getRelativeLocaleUrl(l)} hreflang={l} lang={l}>
+          {l.toUpperCase()}
+        </a>
+      ),
+    )
+  }
+</nav>
+
+<style>
+  .toggle {
+    position: absolute;
+    top: 28px;
+    right: 32px;
+    display: flex;
+    gap: 14px;
+    font: 400 13px/1 var(--font-geist);
+  }
+
+  .toggle a {
+    padding: 4px 2px;
+    text-decoration: none;
+    color: var(--color-inactive);
+    border-bottom: 1px solid transparent;
+    transition: color 120ms ease;
+  }
+
+  .toggle a:hover {
+    color: var(--color-hover);
+  }
+
+  .toggle a[aria-current='page'],
+  .toggle a[aria-current='page']:hover {
+    color: var(--color-ink);
+    border-bottom-color: var(--color-ink);
+  }
+
+  @media (max-width: 480px) {
+    .toggle {
+      top: 20px;
+      right: 20px;
+    }
+  }
+</style>
