@@ -9,5 +9,5 @@ export const links = {
 
 export type LinkKey = keyof typeof links;
 
-/** Display order of the link row. */
-export const linkOrder: LinkKey[] = ['linkedin', 'blog', 'github', 'malt', 'email'];
+/** Display order of the link row. Add 'blog' back after 'linkedin' once the blog is live. */
+export const linkOrder: LinkKey[] = ['linkedin', 'github', 'malt', 'email'];
