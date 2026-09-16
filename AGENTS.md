@@ -23,6 +23,8 @@ Consult these guides before working on related tasks:
 
 ## Blog
 
+To publish an article from raw text and images, use the `blog-article` skill (`.claude/skills/blog-article/SKILL.md`): it translates, then runs `node scripts/article.mjs create <spec.json> --build`, which creates the folder, copies and resizes images, writes both language files and validates everything. `npm run article:check` validates all existing articles.
+
 Articles live in `src/content/blog/<slug>/`, one folder per article, and every article MUST ship in both languages:
 
 ```

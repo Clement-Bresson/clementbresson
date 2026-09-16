@@ -10,7 +10,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "astro build && wrangler deploy"
+    "deploy": "astro build && wrangler deploy",
+    "article": "node scripts/article.mjs",
+    "article:check": "node scripts/article.mjs check"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
