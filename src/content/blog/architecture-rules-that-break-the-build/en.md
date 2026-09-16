@@ -56,4 +56,6 @@ The others are actually intentions.
 
 [dependency-cruiser](/blog/dependency-cruiser-as-a-sensor-for-ai-agents/) applies the same idea to the whole import graph.
 
+The same reflex applies to [isolating customer data in a SaaS](/blog/multi-tenant-data-isolation-four-levels/): an omitted tenant must return zero rows, not a leak.
+
 PS: a rule that passes does not mean the rule is good. Thinking and making the right choices for each project's context is not optional.
