@@ -31,7 +31,7 @@ One-time setup:
 3. **GitHub secrets** (repo → Settings → Secrets and variables → Actions): `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
 4. **First deploy**: push to `main` (or run the workflow manually). The site is live at `clementbresson.clement0bresson.workers.dev`.
 5. **Domain**: in Cloudflare, *Add a domain* → `clementbresson.com` (Free plan). Cloudflare gives you two nameservers. In GoDaddy → Domain → Nameservers → *Change* → *Enter my own*, paste them. Propagation takes minutes to a few hours; Cloudflare emails when the zone is active.
-6. **Attach the domain**: uncomment the `routes` block in `wrangler.jsonc` and push. Cloudflare creates the DNS records and TLS certificate for `clementbresson.com` and `www.clementbresson.com`.
+6. **Attach the domain**: the `routes` block in `wrangler.jsonc` declares both hostnames as custom domains; any deploy applies it. Cloudflare creates the DNS records and TLS certificate for `clementbresson.com` and `www.clementbresson.com`.
 7. **www redirect**: Workers static assets do not support host-based rules in `_redirects`, so add a Redirect Rule in Cloudflare (domain → Rules → Redirect Rules → *Redirect from WWW to root* template).
 
 Local deploy is also possible with `npx wrangler login` then `npm run deploy`.

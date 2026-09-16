@@ -9,12 +9,11 @@
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
   },
-  // Custom domains. Enable once clementbresson.com is an active zone on
-  // Cloudflare (nameservers switched at GoDaddy), otherwise `wrangler deploy` fails.
-  // "routes": [
-  //   { "pattern": "clementbresson.com", "custom_domain": true },
-  //   { "pattern": "www.clementbresson.com", "custom_domain": true }
-  // ],
+  // Custom domains: clementbresson.com is an active zone on this account.
+  "routes": [
+    { "pattern": "clementbresson.com", "custom_domain": true },
+    { "pattern": "www.clementbresson.com", "custom_domain": true }
+  ],
   "observability": {
     "enabled": true
   }
