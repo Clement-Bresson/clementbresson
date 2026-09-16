@@ -1,2 +1,0 @@
-# Canonical host: redirect www to the apex domain.
-https://www.clementbresson.com/* https://clementbresson.com/:splat 301
