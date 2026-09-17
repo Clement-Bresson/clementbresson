@@ -1,8 +1,8 @@
 ---
-title: 'Building a product is easy. Distribution is the hard part.'
-description: 'Developers often forget that building a product depends on them. Selling, onboarding and keeping customers does not. A simple plan for technical founders.'
+title: "Building a product is easy. Distribution is the hard part."
+description: "Developers often forget that building a product depends on them. Selling, onboarding and keeping customers does not. A simple plan for technical founders."
 pubDate: 2026-09-06
-tags: ['fractional']
+tags: ["fractional"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7502480074588389376/
 draft: false
 ---

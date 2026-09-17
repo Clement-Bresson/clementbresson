@@ -1,12 +1,19 @@
 ---
-import { Image } from 'astro:assets';
-import { render } from 'astro:content';
-import { getRelativeLocaleUrl } from 'astro:i18n';
-import { tagCopy } from '../data/tags';
-import { getCopy } from '../i18n';
-import { blogPath, formatDate, getRelated, postPath, readingMinutes, type Post } from '../lib/blog';
-import LangToggle from './LangToggle.astro';
-import TagList from './TagList.astro';
+import { Image } from "astro:assets";
+import { render } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { tagCopy } from "../data/tags";
+import { getCopy } from "../i18n";
+import {
+  blogPath,
+  formatDate,
+  getRelated,
+  postPath,
+  readingMinutes,
+  type Post,
+} from "../lib/blog";
+import LangToggle from "./LangToggle.astro";
+import TagList from "./TagList.astro";
 
 interface Props {
   post: Post;
@@ -22,7 +29,11 @@ const minutes = readingMinutes(post.body);
 const related = await getRelated(post);
 ---
 
-<LangToggle current={locale} label={t.langSwitchLabel} path={postPath(post.slug)} />
+<LangToggle
+  current={locale}
+  label={t.langSwitchLabel}
+  path={postPath(post.slug)}
+/>
 
 <main class="page">
   <article>
@@ -32,103 +43,114 @@ const related = await getRelated(post);
         <span aria-hidden="true">/</span>
         <a href={getRelativeLocaleUrl(locale, blogPath)}>{t.blog.title}</a>
       </nav>
-      <h1 class="heading rise" style="--delay: 80ms">{data.title}</h1>
+      <h1 class="heading rise" style="--delay: 80ms">
+        {data.title}
+      </h1>
       <p class="meta rise" style="--delay: 160ms">
         <span>
-          <a href={getRelativeLocaleUrl(locale)} rel="author">{t.name}</a>
-          {' · '}
+          <a href={getRelativeLocaleUrl(locale)} rel="author">
+            {t.name}
+          </a>
+          {" · "}
         </span>
         <span>
-          {t.blog.published}{' '}
-          <time datetime={iso(data.pubDate)}>{formatDate(data.pubDate, locale)}</time>
+          {t.blog.published}{" "}
+          <time datetime={iso(data.pubDate)}>
+            {formatDate(data.pubDate, locale)}
+          </time>
         </span>
-        {
-          data.updatedDate && (
-            <span>
-              {' · '}
-              {t.blog.updated}{' '}
-              <time datetime={iso(data.updatedDate)}>{formatDate(data.updatedDate, locale)}</time>
-            </span>
-          )
-        }
-        <span>{' · '}{minutes} {t.blog.minRead}</span>
+        {data.updatedDate && (
+          <span>
+            {" · "}
+            {t.blog.updated}{" "}
+            <time datetime={iso(data.updatedDate)}>
+              {formatDate(data.updatedDate, locale)}
+            </time>
+          </span>
+        )}
+        <span>
+          {" · "}
+          {minutes} {t.blog.minRead}
+        </span>
       </p>
-      {
-        data.cover && (
-          <Image
-            class="cover rise"
-            style="--delay: 240ms"
-            src={data.cover}
-            alt={data.coverAlt ?? ''}
-            widths={[640, 1280]}
-            sizes="(max-width: 680px) 100vw, 640px"
-            format="webp"
-            quality={82}
-            loading="eager"
-            fetchpriority="high"
-          />
-        )
-      }
+      {data.cover && (
+        <Image
+          class="cover rise"
+          style="--delay: 240ms"
+          src={data.cover}
+          alt={data.coverAlt ?? ""}
+          widths={[640, 1280]}
+          sizes="(max-width: 680px) 100vw, 640px"
+          format="webp"
+          quality={82}
+          loading="eager"
+          fetchpriority="high"
+        />
+      )}
     </header>
 
     <div class="prose rise" style="--delay: 320ms">
       <Content />
     </div>
 
-    {
-      data.sources.length > 0 && (
-        <section class="sources rise" style="--delay: 360ms" aria-labelledby="sources-title">
-          <h2 id="sources-title">{t.blog.sources}</h2>
-          <ul>
-            {data.sources.map((s) => (
-              <li>
-                {s.author && <span class="author">{s.author}, </span>}
-                {s.url ? (
-                  <a href={s.url} rel="noopener">
-                    {s.title}
-                  </a>
-                ) : (
-                  <cite>{s.title}</cite>
-                )}
-                {s.year && <span class="year"> ({s.year})</span>}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )
-    }
-
-    <footer class="article-foot rise" style="--delay: 400ms">
-      {tags.length > 0 && <TagList locale={locale} tags={tags} label={t.blog.topics} />}
-      {
-        data.linkedin && (
-          <p class="origin">
-            <a href={data.linkedin} rel="noopener">
-              {t.blog.originallyOnLinkedIn}
-            </a>
-          </p>
-        )
-      }
-    </footer>
-  </article>
-
-  {
-    related.length > 0 && (
-      <aside class="related rise" style="--delay: 440ms" aria-labelledby="related-title">
-        <h2 id="related-title">{t.blog.related}</h2>
+    {data.sources.length > 0 && (
+      <section
+        class="sources rise"
+        style="--delay: 360ms"
+        aria-labelledby="sources-title"
+      >
+        <h2 id="sources-title">{t.blog.sources}</h2>
         <ul>
-          {related.map((r) => (
+          {data.sources.map((s) => (
             <li>
-              <a href={getRelativeLocaleUrl(locale, postPath(r.slug))}>
-                <span class="related-title">{r.data.title}</span>
-                <span class="related-desc">{r.data.description}</span>
-              </a>
+              {s.author && <span class="author">{s.author}, </span>}
+              {s.url ? (
+                <a href={s.url} rel="noopener">
+                  {s.title}
+                </a>
+              ) : (
+                <cite>{s.title}</cite>
+              )}
+              {s.year && <span class="year"> ({s.year})</span>}
             </li>
           ))}
         </ul>
-      </aside>
-    )
-  }
+      </section>
+    )}
+
+    <footer class="article-foot rise" style="--delay: 400ms">
+      {tags.length > 0 && (
+        <TagList locale={locale} tags={tags} label={t.blog.topics} />
+      )}
+      {data.linkedin && (
+        <p class="origin">
+          <a href={data.linkedin} rel="noopener">
+            {t.blog.originallyOnLinkedIn}
+          </a>
+        </p>
+      )}
+    </footer>
+  </article>
+
+  {related.length > 0 && (
+    <aside
+      class="related rise"
+      style="--delay: 440ms"
+      aria-labelledby="related-title"
+    >
+      <h2 id="related-title">{t.blog.related}</h2>
+      <ul>
+        {related.map((r) => (
+          <li>
+            <a href={getRelativeLocaleUrl(locale, postPath(r.slug))}>
+              <span class="related-title">{r.data.title}</span>
+              <span class="related-desc">{r.data.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  )}
 
   <footer class="foot rise" style="--delay: 480ms">
     <a href={getRelativeLocaleUrl(locale, blogPath)}>← {t.blog.backToBlog}</a>

@@ -1,12 +1,12 @@
 ---
-title: 'Un « Model », c''est quoi ? Deux choses qui n''ont rien à voir'
+title: "Un « Model », c'est quoi ? Deux choses qui n'ont rien à voir"
 description: "« Model » désigne le Model d’un ORM comme le domain model du DDD. Les confondre fait croire qu’on a modélisé son métier alors qu’on a décrit ses tables."
 pubDate: 2026-09-12
-tags: ['architecture']
+tags: ["architecture"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7504605709494407168/
 sources:
-  - title: 'Domain-Driven Design'
-    author: 'Eric Evans'
+  - title: "Domain-Driven Design"
+    author: "Eric Evans"
     year: 2003
 draft: false
 ---

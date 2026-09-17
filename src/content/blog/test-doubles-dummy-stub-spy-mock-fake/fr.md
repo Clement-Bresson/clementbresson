@@ -1,16 +1,16 @@
 ---
-title: 'Dummy, stub, spy, mock, fake : cinq doublures, une seule question'
-description: 'Les cinq types de doublures de test se confondent facilement. Une question posée à la doublure, tirée de Meszaros, suffit à les distinguer pour de bon.'
+title: "Dummy, stub, spy, mock, fake : cinq doublures, une seule question"
+description: "Les cinq types de doublures de test se confondent facilement. Une question posée à la doublure, tirée de Meszaros, suffit à les distinguer pour de bon."
 pubDate: 2026-08-29
-tags: ['testing']
+tags: ["testing"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7499465319887867904/
 sources:
-  - title: 'Test Double (xUnit Test Patterns)'
-    author: 'Gerard Meszaros'
+  - title: "Test Double (xUnit Test Patterns)"
+    author: "Gerard Meszaros"
     year: 2007
     url: http://xunitpatterns.com/Test%20Double.html
-  - title: 'Test Double'
-    author: 'Martin Fowler'
+  - title: "Test Double"
+    author: "Martin Fowler"
     year: 2006
     url: https://martinfowler.com/bliki/TestDouble.html
 draft: false

@@ -2,14 +2,14 @@
 title: "Onion Architecture: business code at the centre"
 description: "What Jeffrey Palermo proposed in 2008 with Onion Architecture: a single dependency rule so that business code stops paying for every technology change."
 pubDate: 2026-08-24
-tags: ['architecture']
+tags: ["architecture"]
 sources:
-  - title: 'The Onion Architecture: part 1'
-    author: 'Jeffrey Palermo'
+  - title: "The Onion Architecture: part 1"
+    author: "Jeffrey Palermo"
     year: 2008
     url: https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/
-  - title: 'Hexagonal architecture'
-    author: 'Alistair Cockburn'
+  - title: "Hexagonal architecture"
+    author: "Alistair Cockburn"
     url: https://alistair.cockburn.us/hexagonal-architecture/
 draft: false
 ---

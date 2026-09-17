@@ -1,15 +1,15 @@
 ---
-title: 'Vos tests sont verts, mais ça ne prouve rien : le mutation testing'
-description: 'Le coverage mesure les lignes traversées, pas celles vérifiées. Le mutation testing mesure si vos tests détectent, vital quand des agents écrivent les tests.'
+title: "Vos tests sont verts, mais ça ne prouve rien : le mutation testing"
+description: "Le coverage mesure les lignes traversées, pas celles vérifiées. Le mutation testing mesure si vos tests détectent, vital quand des agents écrivent les tests."
 pubDate: 2026-09-05
-tags: ['testing', 'ai-harnesses']
+tags: ["testing", "ai-harnesses"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7502090523608973312/
 sources:
-  - title: 'Stryker Mutator'
+  - title: "Stryker Mutator"
     url: https://stryker-mutator.io/
-  - title: 'PIT Mutation Testing'
+  - title: "PIT Mutation Testing"
     url: https://pitest.org/
-  - title: 'mutmut'
+  - title: "mutmut"
     url: https://github.com/boxed/mutmut
 draft: false
 ---

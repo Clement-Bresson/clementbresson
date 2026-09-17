@@ -1,8 +1,8 @@
 ---
-title: 'Le prochain goulot d’étranglement du développement, c’est la RAM'
+title: "Le prochain goulot d’étranglement du développement, c’est la RAM"
 description: "L’IA a déplacé le bottleneck de l’écriture vers la relecture. Le suivant est matériel : cinq agents en parallèle demandent une machine que peu auront."
 pubDate: 2026-08-31
-tags: ['ai-era']
+tags: ["ai-era"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7500251398761013251/
 draft: false
 ---

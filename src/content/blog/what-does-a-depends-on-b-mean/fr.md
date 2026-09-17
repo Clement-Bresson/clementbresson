@@ -2,7 +2,7 @@
 title: "« A dépend de B » : de quoi parle-t-on exactement ?"
 description: "Une dépendance peut être vue par le compilateur, par un test, ou par personne. Trois questions pour rester précis, entre développeurs comme face à une IA."
 pubDate: 2026-08-27
-tags: ['architecture']
+tags: ["architecture"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7498651824695144448/
 draft: false
 ---

@@ -1,8 +1,8 @@
 ---
-title: "\"A depends on B\": what exactly are we talking about?"
+title: '"A depends on B": what exactly are we talking about?'
 description: "A dependency can be seen by the compiler, by a test, or by nobody. Three questions to stay precise, with developers and with an AI."
 pubDate: 2026-08-27
-tags: ['architecture']
+tags: ["architecture"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7498651824695144448/
 draft: false
 ---

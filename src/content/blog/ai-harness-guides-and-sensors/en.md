@@ -1,15 +1,15 @@
 ---
-title: 'AI harnesses: guides and sensors, the four boxes to fill'
-description: 'A harness is everything in an agent that is not the model. Two axes, four boxes, and a painful conclusion about the harnessability of a codebase.'
+title: "AI harnesses: guides and sensors, the four boxes to fill"
+description: "A harness is everything in an agent that is not the model. Two axes, four boxes, and a painful conclusion about the harnessability of a codebase."
 pubDate: 2026-09-07
-tags: ['ai-harnesses']
+tags: ["ai-harnesses"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7502834032964030465/
 sources:
-  - title: 'Article on AI agent harnesses (martinfowler.com)'
-    author: 'Birgitta Böckeler'
+  - title: "Article on AI agent harnesses (martinfowler.com)"
+    author: "Birgitta Böckeler"
     year: 2026
-  - title: 'dependency-cruiser'
-    author: 'Sander Verweij'
+  - title: "dependency-cruiser"
+    author: "Sander Verweij"
     url: https://github.com/sverweij/dependency-cruiser
 draft: false
 ---

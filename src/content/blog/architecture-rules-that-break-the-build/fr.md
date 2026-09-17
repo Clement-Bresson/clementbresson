@@ -1,11 +1,11 @@
 ---
-title: 'Combien de vos règles d’architecture cassent le build ?'
-description: 'Avec l’IA, une architecture standardisée devient un atout : chaque règle vérifiable par une machine est une contrainte, les autres ne sont que des intentions.'
+title: "Combien de vos règles d’architecture cassent le build ?"
+description: "Avec l’IA, une architecture standardisée devient un atout : chaque règle vérifiable par une machine est une contrainte, les autres ne sont que des intentions."
 pubDate: 2026-08-30
-tags: ['architecture', 'ai-harnesses']
+tags: ["architecture", "ai-harnesses"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7499770330241118208/
 sources:
-  - title: 'no-restricted-imports (ESLint rule)'
+  - title: "no-restricted-imports (ESLint rule)"
     url: https://eslint.org/docs/latest/rules/no-restricted-imports
 draft: false
 ---

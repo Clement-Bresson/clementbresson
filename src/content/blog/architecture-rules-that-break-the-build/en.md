@@ -1,11 +1,11 @@
 ---
-title: 'How many of your architecture rules break the build?'
-description: 'With AI, a standardised architecture becomes an asset: every rule a machine can verify is a constraint. The others are only intentions.'
+title: "How many of your architecture rules break the build?"
+description: "With AI, a standardised architecture becomes an asset: every rule a machine can verify is a constraint. The others are only intentions."
 pubDate: 2026-08-30
-tags: ['architecture', 'ai-harnesses']
+tags: ["architecture", "ai-harnesses"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7499770330241118208/
 sources:
-  - title: 'no-restricted-imports (ESLint rule)'
+  - title: "no-restricted-imports (ESLint rule)"
     url: https://eslint.org/docs/latest/rules/no-restricted-imports
 draft: false
 ---

@@ -1,7 +1,7 @@
-import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
-import { z } from 'astro/zod';
-import { tagIds } from './src/data/tags';
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
+import { tagIds } from "./src/data/tags";
 
 /**
  * Blog articles. One folder per article, always with both languages:
@@ -16,9 +16,9 @@ import { tagIds } from './src/data/tags';
  */
 const blog = defineCollection({
   loader: glob({
-    pattern: '*/{en,fr}.md',
-    base: './src/content/blog',
-    generateId: ({ entry }) => entry.replace(/\.md$/, ''),
+    pattern: "*/{en,fr}.md",
+    base: "./src/content/blog",
+    generateId: ({ entry }) => entry.replace(/\.md$/, ""),
   }),
   schema: ({ image }) =>
     z.object({

@@ -2,7 +2,7 @@
 title: "Multi-tenant : les quatre niveaux de séparation des données"
 description: "Un SaaS qui gère des données sensibles doit séparer celles de chaque client. Quatre niveaux, du tenant_id à l’infra dédiée, et celui que je choisis souvent."
 pubDate: 2026-09-16
-tags: ['architecture']
+tags: ["architecture"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7506068368706215937/
 draft: false
 ---

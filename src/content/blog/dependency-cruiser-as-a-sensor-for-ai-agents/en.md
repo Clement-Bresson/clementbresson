@@ -1,12 +1,12 @@
 ---
-title: 'dependency-cruiser: a computational sensor for your AI agents'
+title: "dependency-cruiser: a computational sensor for your AI agents"
 description: "dependency-cruiser maps imports and fails CI when a boundary is violated. A sensor for AI agents that only works if the architecture is clear enough to describe."
 pubDate: 2026-09-08
-tags: ['ai-harnesses', 'architecture']
+tags: ["ai-harnesses", "architecture"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7503173496605351936/
 sources:
-  - title: 'dependency-cruiser'
-    author: 'Sander Verweij'
+  - title: "dependency-cruiser"
+    author: "Sander Verweij"
     url: https://github.com/sverweij/dependency-cruiser
 draft: false
 ---
@@ -35,7 +35,7 @@ On a codebase where everything imports everything, there is nothing to check. Th
 
 And that is where it gets vicious: the more chaotic the codebase, the fewer guardrails the AI has, the more chaos it adds.
 
-The AI gets worse and worse on *your* project. Not because the model is degrading. Because the terrain is.
+The AI gets worse and worse on _your_ project. Not because the model is degrading. Because the terrain is.
 
 So before stacking agents on an app generated in 3 weeks, have someone who does this for a living look at the structure. That is what decides whether AI is still helping you in 6 months… or not at all.
 

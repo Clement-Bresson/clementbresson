@@ -1,8 +1,8 @@
 ---
-title: 'Pourquoi je me lance à 100 % sur le développeur un jour par semaine'
+title: "Pourquoi je me lance à 100 % sur le développeur un jour par semaine"
 description: "Cinq profils quasi identiques m’ont demandé la même chose : un développeur qui surveille leurs arrières, sans temps plein. J’en fais mon métier."
 pubDate: 2026-09-15
-tags: ['fractional']
+tags: ["fractional"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7505696158980317184/
 draft: false
 ---

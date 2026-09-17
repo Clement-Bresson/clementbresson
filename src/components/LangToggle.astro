@@ -1,6 +1,6 @@
 ---
-import { getRelativeLocaleUrl } from 'astro:i18n';
-import { locales, type Locale } from '../i18n';
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { locales, type Locale } from "../i18n";
 
 interface Props {
   current: Locale;
@@ -9,23 +9,26 @@ interface Props {
   path?: string;
 }
 
-const { current, label, path = '' } = Astro.props;
+const { current, label, path = "" } = Astro.props;
 ---
 
 <nav class="toggle rise" aria-label={label} style="--delay: 640ms">
-  {
-    locales.map((l) =>
-      l === current ? (
-        <a href={getRelativeLocaleUrl(l, path)} aria-current="page" hreflang={l} lang={l}>
-          {l.toUpperCase()}
-        </a>
-      ) : (
-        <a href={getRelativeLocaleUrl(l, path)} hreflang={l} lang={l}>
-          {l.toUpperCase()}
-        </a>
-      ),
-    )
-  }
+  {locales.map((l) =>
+    l === current ? (
+      <a
+        href={getRelativeLocaleUrl(l, path)}
+        aria-current="page"
+        hreflang={l}
+        lang={l}
+      >
+        {l.toUpperCase()}
+      </a>
+    ) : (
+      <a href={getRelativeLocaleUrl(l, path)} hreflang={l} lang={l}>
+        {l.toUpperCase()}
+      </a>
+    ),
+  )}
 </nav>
 
 <style>
@@ -50,8 +53,8 @@ const { current, label, path = '' } = Astro.props;
     color: var(--color-hover);
   }
 
-  .toggle a[aria-current='page'],
-  .toggle a[aria-current='page']:hover {
+  .toggle a[aria-current="page"],
+  .toggle a[aria-current="page"]:hover {
     color: var(--color-ink);
     border-bottom-color: var(--color-ink);
   }

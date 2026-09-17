@@ -1,8 +1,8 @@
 ---
-title: 'The part-time senior developer: a new freelancing model'
-description: 'In companies where the product only supports the business, vibe-coding hits a wall fast. A senior developer a few days a month is often enough to lift it.'
+title: "The part-time senior developer: a new freelancing model"
+description: "In companies where the product only supports the business, vibe-coding hits a wall fast. A senior developer a few days a month is often enough to lift it."
 pubDate: 2026-09-04
-tags: ['fractional', 'ai-era']
+tags: ["fractional", "ai-era"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7501742353234419712/
 draft: false
 ---

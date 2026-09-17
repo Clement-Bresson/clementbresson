@@ -1,8 +1,8 @@
 ---
-title: 'Le développeur senior à mi-temps : un nouveau modèle de freelancing'
-description: 'Dans les boîtes où le produit n’est qu’un support au business, le vibe-coding atteint vite un mur. Un senior quelques jours par mois suffit souvent à le lever.'
+title: "Le développeur senior à mi-temps : un nouveau modèle de freelancing"
+description: "Dans les boîtes où le produit n’est qu’un support au business, le vibe-coding atteint vite un mur. Un senior quelques jours par mois suffit souvent à le lever."
 pubDate: 2026-09-04
-tags: ['fractional', 'ai-era']
+tags: ["fractional", "ai-era"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7501742353234419712/
 draft: false
 ---

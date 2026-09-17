@@ -2,7 +2,7 @@
 title: "Une « couche » en architecture logicielle, c'est quoi ?"
 description: "Abstraction, technique, flux d'appel, dépendances, déploiement : « couche » désigne cinq découpages différents, et votre programme les a sans doute tous."
 pubDate: 2026-08-26
-tags: ['architecture']
+tags: ["architecture"]
 draft: false
 ---
 

@@ -1,8 +1,8 @@
 ---
-title: 'Le TJM à l’expérience ne mesure plus rien'
-description: 'La grille de TJM reposait sur les années d’expérience parce que le clavier bornait l’écart entre bons et mauvais développeurs. Avec l’IA, ce goulot saute.'
+title: "Le TJM à l’expérience ne mesure plus rien"
+description: "La grille de TJM reposait sur les années d’expérience parce que le clavier bornait l’écart entre bons et mauvais développeurs. Avec l’IA, ce goulot saute."
 pubDate: 2026-09-09
-tags: ['ai-era', 'fractional']
+tags: ["ai-era", "fractional"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7503531080134742017/
 draft: false
 ---
@@ -26,7 +26,7 @@ Le mauvais était néfaste pour le projet : mauvais choix, dette technique à ch
 
 ## Pourquoi ça marchait quand même
 
-Tant que le goulot d’étranglement était la vitesse d’écriture au clavier, le mauvais ne pouvait pas faire *trop* de dégâts en une journée. Et le bon ne pouvait pas en réparer beaucoup plus.
+Tant que le goulot d’étranglement était la vitesse d’écriture au clavier, le mauvais ne pouvait pas faire _trop_ de dégâts en une journée. Et le bon ne pouvait pas en réparer beaucoup plus.
 
 L’écart existait, mais il était borné par le clavier. Donc payer à l’expérience restait une approximation acceptable.
 
@@ -34,7 +34,7 @@ L’écart existait, mais il était borné par le clavier. Donc payer à l’exp
 
 Le mauvais prompte, copie-colle, et crée des problèmes vitesse grand V.
 
-Le bon fait autre chose : il construit un [harnais](/fr/blog/ai-harness-guides-and-sensors/). [Des tests qui bloquent](/fr/blog/mutation-testing-in-the-age-of-ai-generated-tests/), une CI qui refuse, une architecture où l’agent ne *peut pas* faire n’importe quoi.
+Le bon fait autre chose : il construit un [harnais](/fr/blog/ai-harness-guides-and-sensors/). [Des tests qui bloquent](/fr/blog/mutation-testing-in-the-age-of-ai-generated-tests/), une CI qui refuse, une architecture où l’agent ne _peut pas_ faire n’importe quoi.
 
 Et là, l’IA ne va plus juste vite : elle va vite dans la bonne direction, potentiellement même toute seule, quand le bon développeur n’est plus devant l’écran.
 

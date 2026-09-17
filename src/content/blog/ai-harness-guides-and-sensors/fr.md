@@ -1,15 +1,15 @@
 ---
-title: 'Harnais IA : guides et capteurs, les quatre cases à remplir'
-description: 'Un harnais, c’est tout ce qui, dans un agent, n’est pas le modèle. Deux axes, quatre cases, et une conclusion qui fait mal sur la harnessability d’une codebase.'
+title: "Harnais IA : guides et capteurs, les quatre cases à remplir"
+description: "Un harnais, c’est tout ce qui, dans un agent, n’est pas le modèle. Deux axes, quatre cases, et une conclusion qui fait mal sur la harnessability d’une codebase."
 pubDate: 2026-09-07
-tags: ['ai-harnesses']
+tags: ["ai-harnesses"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7502834032964030465/
 sources:
-  - title: 'Article on AI agent harnesses (martinfowler.com)'
-    author: 'Birgitta Böckeler'
+  - title: "Article on AI agent harnesses (martinfowler.com)"
+    author: "Birgitta Böckeler"
     year: 2026
-  - title: 'dependency-cruiser'
-    author: 'Sander Verweij'
+  - title: "dependency-cruiser"
+    author: "Sander Verweij"
     url: https://github.com/sverweij/dependency-cruiser
 draft: false
 ---

@@ -2,11 +2,11 @@
 title: "Functional Core, Imperative Shell : la fin des mocks partout"
 description: "Le talk Boundaries de Gary Bernhardt (2012) reste un des meilleurs conseils de testing : séparer décisions et actions, ne passer que des valeurs entre les deux."
 pubDate: 2026-09-11
-tags: ['architecture', 'testing']
+tags: ["architecture", "testing"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7504254004768530433/
 sources:
-  - title: 'Boundaries'
-    author: 'Gary Bernhardt'
+  - title: "Boundaries"
+    author: "Gary Bernhardt"
     year: 2012
     url: https://www.destroyallsoftware.com/talks/boundaries
 draft: false

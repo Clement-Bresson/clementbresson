@@ -1,8 +1,8 @@
 ---
-title: 'Three questions to pick the right tool for your next test'
-description: 'Pure unit test, integration test, a Fake, or a double that records calls: a simple three-question strategy for choosing without hesitation.'
+title: "Three questions to pick the right tool for your next test"
+description: "Pure unit test, integration test, a Fake, or a double that records calls: a simple three-question strategy for choosing without hesitation."
 pubDate: 2026-08-28
-tags: ['testing']
+tags: ["testing"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7499054779600379904/
 draft: false
 ---
@@ -24,7 +24,7 @@ A use case that writes to the database: you run it, you read the database back, 
 
 ## 3. If the effect is not observable in your system
 
-Your code sends an email. You can't read your user's inbox. So, from your point of view, the call to `sendEmail` *is* the expected behaviour: in that case, you replace the Mailer with a double (one that records that it was called, without sending anything) and you check that the call was made.
+Your code sends an email. You can't read your user's inbox. So, from your point of view, the call to `sendEmail` _is_ the expected behaviour: in that case, you replace the Mailer with a double (one that records that it was called, without sending anything) and you check that the call was made.
 
 This third case is a weaker test than the second: you're checking that you asked, not that the effect behind it actually happened. But it's better than nothing!
 

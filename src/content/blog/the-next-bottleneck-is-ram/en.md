@@ -1,8 +1,8 @@
 ---
-title: 'The next bottleneck in software development is RAM'
-description: 'AI moved the bottleneck from writing to reviewing. The next one is hardware: running five agents in parallel needs a machine not everyone will have.'
+title: "The next bottleneck in software development is RAM"
+description: "AI moved the bottleneck from writing to reviewing. The next one is hardware: running five agents in parallel needs a machine not everyone will have."
 pubDate: 2026-08-31
-tags: ['ai-era']
+tags: ["ai-era"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7500251398761013251/
 draft: false
 ---

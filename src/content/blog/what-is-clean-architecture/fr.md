@@ -2,18 +2,18 @@
 title: "Clean Architecture : la Dependency Rule, et rien d'autre"
 description: "Ce que Robert C. Martin extrait en 2012 des architectures Hexagonale, Onion et consorts : une seule règle vérifiable dans le code, la Dependency Rule."
 pubDate: 2026-08-25
-tags: ['architecture']
+tags: ["architecture"]
 sources:
-  - title: 'The Clean Architecture'
-    author: 'Robert C. Martin'
+  - title: "The Clean Architecture"
+    author: "Robert C. Martin"
     year: 2012
     url: https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
-  - title: 'The Onion Architecture: part 1'
-    author: 'Jeffrey Palermo'
+  - title: "The Onion Architecture: part 1"
+    author: "Jeffrey Palermo"
     year: 2008
     url: https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/
-  - title: 'Hexagonal architecture'
-    author: 'Alistair Cockburn'
+  - title: "Hexagonal architecture"
+    author: "Alistair Cockburn"
     url: https://alistair.cockburn.us/hexagonal-architecture/
 draft: false
 ---

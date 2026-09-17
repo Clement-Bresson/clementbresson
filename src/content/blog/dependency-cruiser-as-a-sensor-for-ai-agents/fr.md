@@ -1,12 +1,12 @@
 ---
-title: 'dependency-cruiser : un capteur computationnel pour vos agents IA'
+title: "dependency-cruiser : un capteur computationnel pour vos agents IA"
 description: "dependency-cruiser cartographie les imports et fait échouer la CI quand une frontière est violée. Un capteur pour l’IA, qui exige une architecture claire."
 pubDate: 2026-09-08
-tags: ['ai-harnesses', 'architecture']
+tags: ["ai-harnesses", "architecture"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7503173496605351936/
 sources:
-  - title: 'dependency-cruiser'
-    author: 'Sander Verweij'
+  - title: "dependency-cruiser"
+    author: "Sander Verweij"
     url: https://github.com/sverweij/dependency-cruiser
 draft: false
 ---
@@ -35,7 +35,7 @@ Sur une codebase où tout importe tout, il n’y a rien à vérifier. Le capteur
 
 Et c’est là que ça devient vicieux : plus la codebase est chaotique, moins l’IA a de garde-fous, plus elle ajoute du chaos.
 
-L’IA devient de moins en moins bonne sur *votre* projet. Pas parce que le modèle baisse. Parce que le terrain se dégrade.
+L’IA devient de moins en moins bonne sur _votre_ projet. Pas parce que le modèle baisse. Parce que le terrain se dégrade.
 
 Donc avant d’empiler des agents sur une app générée en 3 semaines, faites regarder la structure par quelqu’un du métier. C’est là que se joue si l’IA vous aide encore dans 6 mois… ou plus du tout.
 

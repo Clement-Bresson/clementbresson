@@ -1,8 +1,8 @@
 ---
-title: 'Créer un produit est simple. La distribution, non.'
+title: "Créer un produit est simple. La distribution, non."
 description: "Construire un produit dépend des développeurs. Vendre, onboarder et retenir des clients, non. Un plan simple pour les porteurs de projet tech."
 pubDate: 2026-09-06
-tags: ['fractional']
+tags: ["fractional"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7502480074588389376/
 draft: false
 ---

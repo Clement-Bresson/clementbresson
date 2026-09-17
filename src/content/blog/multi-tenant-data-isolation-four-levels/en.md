@@ -2,7 +2,7 @@
 title: "Multi-tenancy: the four levels of data isolation"
 description: "A SaaS handling sensitive data has to keep each customer’s data apart. Four levels, from a tenant_id column to dedicated infra, and the one I usually pick."
 pubDate: 2026-09-16
-tags: ['architecture']
+tags: ["architecture"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7506068368706215937/
 draft: false
 ---

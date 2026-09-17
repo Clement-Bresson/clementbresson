@@ -1,8 +1,8 @@
 ---
-title: 'Experience-based daily rates no longer measure anything'
-description: 'Daily rate grids were built on years of experience because the keyboard capped the gap between good and bad developers. With AI, that bottleneck is gone.'
+title: "Experience-based daily rates no longer measure anything"
+description: "Daily rate grids were built on years of experience because the keyboard capped the gap between good and bad developers. With AI, that bottleneck is gone."
 pubDate: 2026-09-09
-tags: ['ai-era', 'fractional']
+tags: ["ai-era", "fractional"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7503531080134742017/
 draft: false
 ---
@@ -26,7 +26,7 @@ The bad one hurt the project: poor choices, technical debt with every commit. Th
 
 ## Why it worked anyway
 
-As long as the bottleneck was typing speed, the bad developer could not do *too much* damage in a day. And the good one could not repair much more than that.
+As long as the bottleneck was typing speed, the bad developer could not do _too much_ damage in a day. And the good one could not repair much more than that.
 
 The gap existed, but it was capped by the keyboard. So paying by experience remained an acceptable approximation.
 
@@ -34,7 +34,7 @@ The gap existed, but it was capped by the keyboard. So paying by experience rema
 
 The bad developer prompts, copy-pastes, and creates problems at full speed.
 
-The good one does something else: they build a [harness](/blog/ai-harness-guides-and-sensors/). [Tests that block](/blog/mutation-testing-in-the-age-of-ai-generated-tests/), a CI that refuses, an architecture where the agent *cannot* do whatever it wants.
+The good one does something else: they build a [harness](/blog/ai-harness-guides-and-sensors/). [Tests that block](/blog/mutation-testing-in-the-age-of-ai-generated-tests/), a CI that refuses, an architecture where the agent _cannot_ do whatever it wants.
 
 And then AI is not just fast: it moves fast in the right direction, potentially even on its own, when the good developer is no longer in front of the screen.
 

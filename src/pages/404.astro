@@ -1,24 +1,33 @@
 ---
-import { getRelativeLocaleUrl } from 'astro:i18n';
-import Base from '../layouts/Base.astro';
-import { getCopy } from '../i18n';
-import { blogPath } from '../lib/blog';
+import { getRelativeLocaleUrl } from "astro:i18n";
+import Base from "../layouts/Base.astro";
+import { getCopy } from "../i18n";
+import { blogPath } from "../lib/blog";
 
 // Served by Cloudflare for any unknown path (`not_found_handling: 404-page`).
 // The path is unknown, so the page is bilingual and not indexable.
-const en = getCopy('en');
-const fr = getCopy('fr');
+const en = getCopy("en");
+const fr = getCopy("fr");
 ---
 
-<Base locale="en" title={`404 — ${en.name}`} description="Page not found." noindex>
+<Base
+  locale="en"
+  title={`404 — ${en.name}`}
+  description="Page not found."
+  noindex
+>
   <main class="page">
     <p class="code rise">404</p>
-    <h1 class="heading rise" style="--delay: 80ms">Page not found</h1>
+    <h1 class="heading rise" style="--delay: 80ms">
+      Page not found
+    </h1>
     <p class="body rise" style="--delay: 160ms">
-      <a href={getRelativeLocaleUrl('en')}>{en.name}</a> · <a href={getRelativeLocaleUrl('en', blogPath)}>{en.blog.title}</a>
+      <a href={getRelativeLocaleUrl("en")}>{en.name}</a> ·{" "}
+      <a href={getRelativeLocaleUrl("en", blogPath)}>{en.blog.title}</a>
     </p>
     <p class="body fr rise" lang="fr" style="--delay: 240ms">
-      Page introuvable. <a href={getRelativeLocaleUrl('fr')}>{fr.name}</a> · <a href={getRelativeLocaleUrl('fr', blogPath)}>{fr.blog.title}</a>
+      Page introuvable. <a href={getRelativeLocaleUrl("fr")}>{fr.name}</a> ·{" "}
+      <a href={getRelativeLocaleUrl("fr", blogPath)}>{fr.blog.title}</a>
     </p>
   </main>
 </Base>

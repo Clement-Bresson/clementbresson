@@ -1,8 +1,8 @@
 ---
-title: 'Trois questions pour choisir le bon outil pour votre prochain test'
-description: 'Test unitaire pur, intégration, Fake ou doublure qui enregistre les appels : une stratégie simple en trois questions pour choisir sans hésiter.'
+title: "Trois questions pour choisir le bon outil pour votre prochain test"
+description: "Test unitaire pur, intégration, Fake ou doublure qui enregistre les appels : une stratégie simple en trois questions pour choisir sans hésiter."
 pubDate: 2026-08-28
-tags: ['testing']
+tags: ["testing"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7499054779600379904/
 draft: false
 ---

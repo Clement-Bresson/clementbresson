@@ -1,18 +1,23 @@
 ---
-import { getAbsoluteLocaleUrl } from 'astro:i18n';
-import BlogIndex from '../../../../components/BlogIndex.astro';
-import Base from '../../../../layouts/Base.astro';
-import { getCopy } from '../../../../i18n';
-import { blogPath, getTags, tagPath, type TagSummary } from '../../../../lib/blog';
-import { breadcrumbNode, tagPageNode } from '../../../../lib/schema';
+import { getAbsoluteLocaleUrl } from "astro:i18n";
+import BlogIndex from "../../../../components/BlogIndex.astro";
+import Base from "../../../../layouts/Base.astro";
+import { getCopy } from "../../../../i18n";
+import {
+  blogPath,
+  getTags,
+  tagPath,
+  type TagSummary,
+} from "../../../../lib/blog";
+import { breadcrumbNode, tagPageNode } from "../../../../lib/schema";
 
 export async function getStaticPaths() {
-  const tags = await getTags('fr');
+  const tags = await getTags("fr");
   return tags.map((tag) => ({ params: { tag: tag.id }, props: { tag, tags } }));
 }
 
 const { tag, tags } = Astro.props as { tag: TagSummary; tags: TagSummary[] };
-const locale = 'fr';
+const locale = "fr";
 const t = getCopy(locale);
 const schema = [
   tagPageNode(Astro.site, locale, tag),

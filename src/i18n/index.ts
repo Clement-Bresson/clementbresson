@@ -1,6 +1,6 @@
-import { en } from './en';
-import { fr } from './fr';
-import { defaultLocale, locales, type Copy, type Locale } from './ui';
+import { en } from "./en";
+import { fr } from "./fr";
+import { defaultLocale, locales, type Copy, type Locale } from "./ui";
 
 export { defaultLocale, locales, type Copy, type Locale };
 

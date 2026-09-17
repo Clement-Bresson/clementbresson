@@ -1,17 +1,27 @@
 ---
-import { getImage } from 'astro:assets';
-import portrait from '../../../assets/portrait.png';
-import { getAbsoluteLocaleUrl } from 'astro:i18n';
-import BlogPost from '../../../components/BlogPost.astro';
-import Base from '../../../layouts/Base.astro';
-import { tagCopy } from '../../../data/tags';
-import { getCopy } from '../../../i18n';
-import { blogPath, getPosts, postPath, readingMinutes, wordCount, type Post } from '../../../lib/blog';
-import { blogPostingNode, breadcrumbNode } from '../../../lib/schema';
+import { getImage } from "astro:assets";
+import portrait from "../../../assets/portrait.png";
+import { getAbsoluteLocaleUrl } from "astro:i18n";
+import BlogPost from "../../../components/BlogPost.astro";
+import Base from "../../../layouts/Base.astro";
+import { tagCopy } from "../../../data/tags";
+import { getCopy } from "../../../i18n";
+import {
+  blogPath,
+  getPosts,
+  postPath,
+  readingMinutes,
+  wordCount,
+  type Post,
+} from "../../../lib/blog";
+import { blogPostingNode, breadcrumbNode } from "../../../lib/schema";
 
 export async function getStaticPaths() {
-  const posts = await getPosts('fr');
-  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+  const posts = await getPosts("fr");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
 }
 
 const { post } = Astro.props as { post: Post };
@@ -19,10 +29,24 @@ const { locale, data } = post;
 const t = getCopy(locale);
 
 const coverUrl = data.cover
-  ? new URL((await getImage({ src: data.cover, width: 1200, format: 'jpg', quality: 82 })).src, Astro.site).href
+  ? new URL(
+      (
+        await getImage({
+          src: data.cover,
+          width: 1200,
+          format: "jpg",
+          quality: 82,
+        })
+      ).src,
+      Astro.site,
+    ).href
   : undefined;
 
-const fallbackImageUrl = new URL((await getImage({ src: portrait, width: 1200, format: 'jpg', quality: 82 })).src, Astro.site).href;
+const fallbackImageUrl = new URL(
+  (await getImage({ src: portrait, width: 1200, format: "jpg", quality: 82 }))
+    .src,
+  Astro.site,
+).href;
 
 const schema = [
   blogPostingNode(Astro.site, post, {
@@ -34,7 +58,10 @@ const schema = [
   breadcrumbNode([
     { name: t.name, url: getAbsoluteLocaleUrl(locale) },
     { name: t.blog.title, url: getAbsoluteLocaleUrl(locale, blogPath) },
-    { name: data.title, url: getAbsoluteLocaleUrl(locale, postPath(post.slug)) },
+    {
+      name: data.title,
+      url: getAbsoluteLocaleUrl(locale, postPath(post.slug)),
+    },
   ]),
 ];
 ---
@@ -45,7 +72,11 @@ const schema = [
   title={data.title}
   description={data.description}
   ogType="article"
-  ogImage={data.cover ? { src: data.cover, alt: data.coverAlt ?? data.title } : undefined}
+  ogImage={
+    data.cover
+      ? { src: data.cover, alt: data.coverAlt ?? data.title }
+      : undefined
+  }
   article={{
     published: data.pubDate,
     modified: data.updatedDate,

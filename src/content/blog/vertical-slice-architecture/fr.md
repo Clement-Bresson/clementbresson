@@ -2,11 +2,11 @@
 title: "Vertical Slice Architecture : ranger le code par requête"
 description: "Ajouter un champ touche six fichiers dans quatre dossiers ? La fonctionnalité n'est rangée nulle part. La VSA de Jimmy Bogard range le code par requête."
 pubDate: 2026-09-02
-tags: ['architecture']
+tags: ["architecture"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7500990856124874752/
 sources:
-  - title: 'Vertical Slice Architecture'
-    author: 'Jimmy Bogard'
+  - title: "Vertical Slice Architecture"
+    author: "Jimmy Bogard"
     year: 2018
     url: https://www.jimmybogard.com/vertical-slice-architecture/
 draft: false

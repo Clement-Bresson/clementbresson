@@ -1,8 +1,8 @@
 ---
-title: 'Le marché des développeurs est en pleine mutation'
+title: "Le marché des développeurs est en pleine mutation"
 description: "Les grosses équipes de dev se réduisent à cause de l’IA. Pendant ce temps, les PME créent leurs outils internes et auront besoin d’experts quelques jours par mois."
 pubDate: 2026-09-13
-tags: ['ai-era', 'fractional']
+tags: ["ai-era", "fractional"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7504965691549065216/
 draft: false
 ---
@@ -15,7 +15,7 @@ Les grosses équipes de dev ont tendance à se réduire à cause de l’IA. Moin
 
 Et c’est normal : ce qui prenait parfois des heures peut maintenant prendre des minutes.
 
-D’ici quelques années, je pense même que les équipes de dev tout court seront rares, et vraiment limitées aux entreprises dont le produit *est* la tech.
+D’ici quelques années, je pense même que les équipes de dev tout court seront rares, et vraiment limitées aux entreprises dont le produit _est_ la tech.
 
 ## De l’autre : les PME se mettent à coder
 

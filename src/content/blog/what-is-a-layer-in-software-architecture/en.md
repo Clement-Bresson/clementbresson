@@ -1,8 +1,8 @@
 ---
-title: "What is a \"layer\" in software architecture?"
-description: "Abstraction, technical role, call flow, dependencies, deployment: \"layer\" names five ways of slicing a program, and yours probably has all of them."
+title: 'What is a "layer" in software architecture?'
+description: 'Abstraction, technical role, call flow, dependencies, deployment: "layer" names five ways of slicing a program, and yours probably has all of them.'
 pubDate: 2026-08-26
-tags: ['architecture']
+tags: ["architecture"]
 draft: false
 ---
 

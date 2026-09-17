@@ -4,27 +4,27 @@ Personal site and bilingual blog for Clément Bresson, Fractional Tech Lead. Bui
 
 ## Routes
 
-| URL                      | Content                                  |
-| ------------------------ | ---------------------------------------- |
-| `/`, `/fr/`              | Home (English default, French)           |
-| `/blog/`, `/fr/blog/`    | Blog index with a topics row             |
-| `/blog/<slug>/`          | Article (`/fr/blog/<slug>/` in French)   |
-| `/blog/tag/<tag>/`       | Tag page (`/fr/blog/tag/<tag>/`)         |
-| `/rss.xml`, `/fr/rss.xml`| RSS feeds                                |
-| `/sitemap-index.xml`, `/robots.txt`, `/llms.txt`, `/llms-full.txt` | Generated for search and AI crawlers |
+| URL                                                                | Content                                |
+| ------------------------------------------------------------------ | -------------------------------------- |
+| `/`, `/fr/`                                                        | Home (English default, French)         |
+| `/blog/`, `/fr/blog/`                                              | Blog index with a topics row           |
+| `/blog/<slug>/`                                                    | Article (`/fr/blog/<slug>/` in French) |
+| `/blog/tag/<tag>/`                                                 | Tag page (`/fr/blog/tag/<tag>/`)       |
+| `/rss.xml`, `/fr/rss.xml`                                          | RSS feeds                              |
+| `/sitemap-index.xml`, `/robots.txt`, `/llms.txt`, `/llms-full.txt` | Generated for search and AI crawlers   |
 
 Copy lives in `src/i18n/en.ts` and `src/i18n/fr.ts`. Link targets live in `src/data/links.ts`.
 
 ## Commands
 
-| Command           | Action                                      |
-| ----------------- | ------------------------------------------- |
-| `npm install`     | Install dependencies                        |
-| `npm run dev`     | Start the dev server at `localhost:4321`    |
-| `npm run build`   | Build the production site to `./dist/`      |
-| `npm run preview` | Preview the production build locally        |
-| `npm run article` | Article tooling, see below                  |
-| `npm run article:check` | Validate every article                |
+| Command                 | Action                                   |
+| ----------------------- | ---------------------------------------- |
+| `npm install`           | Install dependencies                     |
+| `npm run dev`           | Start the dev server at `localhost:4321` |
+| `npm run build`         | Build the production site to `./dist/`   |
+| `npm run preview`       | Preview the production build locally     |
+| `npm run article`       | Article tooling, see below               |
+| `npm run article:check` | Validate every article                   |
 
 ## Blog: publishing an article
 
@@ -55,12 +55,12 @@ Review the output, then commit and push. The deploy is automatic.
 
 `scripts/article.mjs` is deterministic and does not use any AI.
 
-| Command                                                   | What it does                                                                                              |
-| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `npm run article create spec.json --build`               | Creates the folder from a JSON spec: copies images (resizing above 1600px), writes `fr.md` and `en.md`, validates, builds |
-| `npm run article check [slug]`                            | Validates one or all articles: both languages, same tags, known tags, images present, internal links resolve |
-| `npm run article index`                                   | Prints every article with titles, descriptions and headings, to choose link targets                     |
-| `npm run article tags`                                    | Lists the tag vocabulary                                                                                  |
+| Command                                    | What it does                                                                                                              |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `npm run article create spec.json --build` | Creates the folder from a JSON spec: copies images (resizing above 1600px), writes `fr.md` and `en.md`, validates, builds |
+| `npm run article check [slug]`             | Validates one or all articles: both languages, same tags, known tags, images present, internal links resolve              |
+| `npm run article index`                    | Prints every article with titles, descriptions and headings, to choose link targets                                       |
+| `npm run article tags`                     | Lists the tag vocabulary                                                                                                  |
 
 Minimal spec:
 
@@ -71,8 +71,18 @@ Minimal spec:
   "tags": ["architecture"],
   "cover": "cover.jpg",
   "images": [{ "from": "/path/to/photo.jpg", "as": "cover.jpg" }],
-  "fr": { "title": "…", "description": "…", "coverAlt": "…", "body": "markdown…" },
-  "en": { "title": "…", "description": "…", "coverAlt": "…", "body": "markdown…" }
+  "fr": {
+    "title": "…",
+    "description": "…",
+    "coverAlt": "…",
+    "body": "markdown…"
+  },
+  "en": {
+    "title": "…",
+    "description": "…",
+    "coverAlt": "…",
+    "body": "markdown…"
+  }
 }
 ```
 
@@ -93,13 +103,13 @@ Every push to `main` runs `.github/workflows/deploy.yml`: it builds the site, th
 
 One-time setup:
 
-1. **Cloudflare account**: create one at dash.cloudflare.com and note the *Account ID* (Workers & Pages → Overview, right column).
-2. **API token**: My Profile → API Tokens → Create Token → template *Edit Cloudflare Workers*. Copy the token.
+1. **Cloudflare account**: create one at dash.cloudflare.com and note the _Account ID_ (Workers & Pages → Overview, right column).
+2. **API token**: My Profile → API Tokens → Create Token → template _Edit Cloudflare Workers_. Copy the token.
 3. **GitHub secrets** (repo → Settings → Secrets and variables → Actions): `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
 4. **First deploy**: push to `main` (or run the workflow manually). Before the custom domain is attached, temporarily set `"workers_dev": true` in `wrangler.jsonc` to get a `clementbresson.clement0bresson.workers.dev` URL for checking.
-5. **Domain**: in Cloudflare, *Add a domain* → `clementbresson.com` (Free plan). Cloudflare gives you two nameservers. In GoDaddy → Domain → Nameservers → *Change* → *Enter my own*, paste them. Propagation takes minutes to a few hours; Cloudflare emails when the zone is active.
+5. **Domain**: in Cloudflare, _Add a domain_ → `clementbresson.com` (Free plan). Cloudflare gives you two nameservers. In GoDaddy → Domain → Nameservers → _Change_ → _Enter my own_, paste them. Propagation takes minutes to a few hours; Cloudflare emails when the zone is active.
 6. **Attach the domain**: the `routes` block in `wrangler.jsonc` declares both hostnames as custom domains; any deploy applies it. Cloudflare creates the DNS records and TLS certificate for `clementbresson.com` and `www.clementbresson.com`.
-7. **www redirect**: Workers static assets do not support host-based rules in `_redirects`, so add a Redirect Rule in Cloudflare (domain → Rules → Redirect Rules → *Redirect from WWW to root* template).
+7. **www redirect**: Workers static assets do not support host-based rules in `_redirects`, so add a Redirect Rule in Cloudflare (domain → Rules → Redirect Rules → _Redirect from WWW to root_ template).
 
 Local deploy is also possible with `npx wrangler login` then `npm run deploy`.
 

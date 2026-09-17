@@ -2,11 +2,11 @@
 title: 'What is a "Model"? Two things that have nothing in common'
 description: '"Model" means both an ORM Model and the DDD domain model. Confusing them makes you think you modelled your business when you only described your tables.'
 pubDate: 2026-09-12
-tags: ['architecture']
+tags: ["architecture"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7504605709494407168/
 sources:
-  - title: 'Domain-Driven Design'
-    author: 'Eric Evans'
+  - title: "Domain-Driven Design"
+    author: "Eric Evans"
     year: 2003
 draft: false
 ---

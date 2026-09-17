@@ -82,10 +82,27 @@ the article belongs to, not for breadth.
     { "from": "diagram.png" }
   ],
   "linkedin": "https://www.linkedin.com/feed/update/urn:li:activity:7504254004768530433/",
-  "sources": [{ "title": "Boundaries", "author": "Gary Bernhardt", "year": 2012, "url": "https://www.destroyallsoftware.com/talks/boundaries" }],
+  "sources": [
+    {
+      "title": "Boundaries",
+      "author": "Gary Bernhardt",
+      "year": 2012,
+      "url": "https://www.destroyallsoftware.com/talks/boundaries"
+    }
+  ],
   "draft": false,
-  "fr": { "title": "…", "description": "…", "coverAlt": "…", "body": "markdown…" },
-  "en": { "title": "…", "description": "…", "coverAlt": "…", "body": "markdown…" }
+  "fr": {
+    "title": "…",
+    "description": "…",
+    "coverAlt": "…",
+    "body": "markdown…"
+  },
+  "en": {
+    "title": "…",
+    "description": "…",
+    "coverAlt": "…",
+    "body": "markdown…"
+  }
 }
 ```
 

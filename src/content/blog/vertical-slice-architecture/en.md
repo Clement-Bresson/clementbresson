@@ -2,11 +2,11 @@
 title: "Vertical Slice Architecture: organise code by request"
 description: "When adding one field touches six files in four folders, the feature lives nowhere. Jimmy Bogard's Vertical Slice Architecture flips the way code is organised."
 pubDate: 2026-09-02
-tags: ['architecture']
+tags: ["architecture"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7500990856124874752/
 sources:
-  - title: 'Vertical Slice Architecture'
-    author: 'Jimmy Bogard'
+  - title: "Vertical Slice Architecture"
+    author: "Jimmy Bogard"
     year: 2018
     url: https://www.jimmybogard.com/vertical-slice-architecture/
 draft: false

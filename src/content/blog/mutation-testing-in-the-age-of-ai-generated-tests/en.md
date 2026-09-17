@@ -1,15 +1,15 @@
 ---
-title: 'Your tests are green, but that proves nothing: mutation testing'
-description: 'Coverage measures lines run through, not lines verified. Mutation testing measures whether tests detect bugs, essential once agents write the tests.'
+title: "Your tests are green, but that proves nothing: mutation testing"
+description: "Coverage measures lines run through, not lines verified. Mutation testing measures whether tests detect bugs, essential once agents write the tests."
 pubDate: 2026-09-05
-tags: ['testing', 'ai-harnesses']
+tags: ["testing", "ai-harnesses"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7502090523608973312/
 sources:
-  - title: 'Stryker Mutator'
+  - title: "Stryker Mutator"
     url: https://stryker-mutator.io/
-  - title: 'PIT Mutation Testing'
+  - title: "PIT Mutation Testing"
     url: https://pitest.org/
-  - title: 'mutmut'
+  - title: "mutmut"
     url: https://github.com/boxed/mutmut
 draft: false
 ---

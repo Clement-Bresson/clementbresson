@@ -7,7 +7,7 @@
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page",
-    "html_handling": "auto-trailing-slash"
+    "html_handling": "auto-trailing-slash",
   },
   // The site is served only on the custom domains below; the *.workers.dev
   // route and per-version preview URLs are off to avoid duplicate hosts.
@@ -16,9 +16,9 @@
   // Custom domains: clementbresson.com is an active zone on this account.
   "routes": [
     { "pattern": "clementbresson.com", "custom_domain": true },
-    { "pattern": "www.clementbresson.com", "custom_domain": true }
+    { "pattern": "www.clementbresson.com", "custom_domain": true },
   ],
   "observability": {
-    "enabled": true
-  }
+    "enabled": true,
+  },
 }

@@ -1,8 +1,8 @@
 ---
-import { getRelativeLocaleUrl } from 'astro:i18n';
-import type { TagId } from '../data/tags';
-import type { Locale } from '../i18n';
-import { tagPath } from '../lib/blog';
+import { getRelativeLocaleUrl } from "astro:i18n";
+import type { TagId } from "../data/tags";
+import type { Locale } from "../i18n";
+import { tagPath } from "../lib/blog";
 
 interface Props {
   locale: Locale;
@@ -18,23 +18,21 @@ interface Props {
 const { locale, tags, label, current, class: className, style } = Astro.props;
 ---
 
-<nav class:list={['tags', className]} aria-label={label} style={style}>
+<nav class:list={["tags", className]} aria-label={label} style={style}>
   {label && <span class="label">{label}</span>}
   <ul>
-    {
-      tags.map((tag) => (
-        <li>
-          {tag.id === current ? (
-            <span aria-current="page">{tag.label}</span>
-          ) : (
-            <a href={getRelativeLocaleUrl(locale, tagPath(tag.id))}>
-              {tag.label}
-              {tag.count !== undefined && <span class="count">{tag.count}</span>}
-            </a>
-          )}
-        </li>
-      ))
-    }
+    {tags.map((tag) => (
+      <li>
+        {tag.id === current ? (
+          <span aria-current="page">{tag.label}</span>
+        ) : (
+          <a href={getRelativeLocaleUrl(locale, tagPath(tag.id))}>
+            {tag.label}
+            {tag.count !== undefined && <span class="count">{tag.count}</span>}
+          </a>
+        )}
+      </li>
+    ))}
   </ul>
 </nav>
 

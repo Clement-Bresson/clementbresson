@@ -1,16 +1,16 @@
 ---
-title: 'Dummy, stub, spy, mock, fake: five test doubles, one question'
-description: 'The five kinds of test doubles are easy to mix up. One question asked of the double, borrowed from Meszaros, is enough to tell them apart for good.'
+title: "Dummy, stub, spy, mock, fake: five test doubles, one question"
+description: "The five kinds of test doubles are easy to mix up. One question asked of the double, borrowed from Meszaros, is enough to tell them apart for good."
 pubDate: 2026-08-29
-tags: ['testing']
+tags: ["testing"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7499465319887867904/
 sources:
-  - title: 'Test Double (xUnit Test Patterns)'
-    author: 'Gerard Meszaros'
+  - title: "Test Double (xUnit Test Patterns)"
+    author: "Gerard Meszaros"
     year: 2007
     url: http://xunitpatterns.com/Test%20Double.html
-  - title: 'Test Double'
-    author: 'Martin Fowler'
+  - title: "Test Double"
+    author: "Martin Fowler"
     year: 2006
     url: https://martinfowler.com/bliki/TestDouble.html
 draft: false

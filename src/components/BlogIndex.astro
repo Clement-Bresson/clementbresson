@@ -1,9 +1,17 @@
 ---
-import { getRelativeLocaleUrl } from 'astro:i18n';
-import { getCopy, type Locale } from '../i18n';
-import { blogPath, filePath, formatDate, postPath, tagPath, type Post, type TagSummary } from '../lib/blog';
-import LangToggle from './LangToggle.astro';
-import TagList from './TagList.astro';
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { getCopy, type Locale } from "../i18n";
+import {
+  blogPath,
+  filePath,
+  formatDate,
+  postPath,
+  tagPath,
+  type Post,
+  type TagSummary,
+} from "../lib/blog";
+import LangToggle from "./LangToggle.astro";
+import TagList from "./TagList.astro";
 
 interface Props {
   locale: Locale;
@@ -17,7 +25,11 @@ interface Props {
 const { locale, posts, tags, tag } = Astro.props;
 const t = getCopy(locale);
 const path = tag ? tagPath(tag.id) : blogPath;
-const topics = tags.map((x) => ({ id: x.id, label: x.label, count: x.posts.length }));
+const topics = tags.map((x) => ({
+  id: x.id,
+  label: x.label,
+  count: x.posts.length,
+}));
 ---
 
 <LangToggle current={locale} label={t.langSwitchLabel} path={path} />
@@ -26,56 +38,58 @@ const topics = tags.map((x) => ({ id: x.id, label: x.label, count: x.posts.lengt
   <header class="head">
     <nav class="crumbs rise" aria-label="Breadcrumb">
       <a href={getRelativeLocaleUrl(locale)}>{t.name}</a>
-      {
-        tag && (
-          <>
-            <span aria-hidden="true">/</span>
-            <a href={getRelativeLocaleUrl(locale, blogPath)}>{t.blog.title}</a>
-          </>
-        )
-      }
+      {tag && (
+        <>
+          <span aria-hidden="true">/</span>
+          <a href={getRelativeLocaleUrl(locale, blogPath)}>{t.blog.title}</a>
+        </>
+      )}
     </nav>
-    <h1 class="heading rise" style="--delay: 80ms">{tag ? tag.label : t.blog.title}</h1>
-    <p class="intro rise" style="--delay: 160ms">{tag ? tag.description : t.blog.description}</p>
-    {
-      !tag && tags.length > 0 && (
-        <div class="topics rise" style="--delay: 200ms">
-          <TagList locale={locale} tags={topics} label={t.blog.topics} />
-        </div>
-      )
-    }
+    <h1 class="heading rise" style="--delay: 80ms">
+      {tag ? tag.label : t.blog.title}
+    </h1>
+    <p class="intro rise" style="--delay: 160ms">
+      {tag ? tag.description : t.blog.description}
+    </p>
+    {!tag && tags.length > 0 && (
+      <div class="topics rise" style="--delay: 200ms">
+        <TagList locale={locale} tags={topics} label={t.blog.topics} />
+      </div>
+    )}
   </header>
 
-  {
-    posts.length === 0 ? (
-      <p class="empty rise" style="--delay: 240ms">
-        {t.blog.empty}
-      </p>
-    ) : (
-      <ol class="list rise" style="--delay: 240ms">
-        {posts.map((post) => (
-          <li class="item">
-            <a class="item-link" href={getRelativeLocaleUrl(locale, postPath(post.slug))}>
-              <time class="date" datetime={post.data.pubDate.toISOString().slice(0, 10)}>
-                {formatDate(post.data.pubDate, locale)}
-              </time>
-              <h2 class="item-title">{post.data.title}</h2>
-              <p class="item-desc">{post.data.description}</p>
-            </a>
-          </li>
-        ))}
-      </ol>
-    )
-  }
+  {posts.length === 0 ? (
+    <p class="empty rise" style="--delay: 240ms">
+      {t.blog.empty}
+    </p>
+  ) : (
+    <ol class="list rise" style="--delay: 240ms">
+      {posts.map((post) => (
+        <li class="item">
+          <a
+            class="item-link"
+            href={getRelativeLocaleUrl(locale, postPath(post.slug))}
+          >
+            <time
+              class="date"
+              datetime={post.data.pubDate.toISOString().slice(0, 10)}
+            >
+              {formatDate(post.data.pubDate, locale)}
+            </time>
+            <h2 class="item-title">{post.data.title}</h2>
+            <p class="item-desc">{post.data.description}</p>
+          </a>
+        </li>
+      ))}
+    </ol>
+  )}
 
   <footer class="foot rise" style="--delay: 320ms">
-    {
-      tag ? (
-        <a href={getRelativeLocaleUrl(locale, blogPath)}>← {t.blog.backToBlog}</a>
-      ) : (
-        <a href={filePath(locale, 'rss.xml')}>{t.blog.rss}</a>
-      )
-    }
+    {tag ? (
+      <a href={getRelativeLocaleUrl(locale, blogPath)}>← {t.blog.backToBlog}</a>
+    ) : (
+      <a href={filePath(locale, "rss.xml")}>{t.blog.rss}</a>
+    )}
   </footer>
 </main>
 

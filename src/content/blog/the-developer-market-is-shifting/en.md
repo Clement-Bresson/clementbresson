@@ -1,8 +1,8 @@
 ---
-title: 'The developer market is shifting'
+title: "The developer market is shifting"
 description: "Large dev teams are shrinking because of AI. Meanwhile, small businesses are starting to build their own internal tools and will need experts a few days a month."
 pubDate: 2026-09-13
-tags: ['ai-era', 'fractional']
+tags: ["ai-era", "fractional"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7504965691549065216/
 draft: false
 ---
@@ -15,7 +15,7 @@ Large dev teams tend to shrink because of AI. Fewer hires, positions cut. We all
 
 And it makes sense: what sometimes took hours can now take minutes.
 
-Within a few years, I even think dev teams as such will be rare, and really limited to companies whose product *is* the tech.
+Within a few years, I even think dev teams as such will be rare, and really limited to companies whose product _is_ the tech.
 
 ## On the other: small businesses are starting to code
 

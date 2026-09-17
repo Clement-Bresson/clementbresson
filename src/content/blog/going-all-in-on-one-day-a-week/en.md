@@ -1,8 +1,8 @@
 ---
-title: 'Why I am going all in on the one-day-a-week developer'
-description: 'In a few weeks, five near-identical profiles asked me for the same thing: a developer who watches their back, but not full-time. I am making it my job.'
+title: "Why I am going all in on the one-day-a-week developer"
+description: "In a few weeks, five near-identical profiles asked me for the same thing: a developer who watches their back, but not full-time. I am making it my job."
 pubDate: 2026-09-15
-tags: ['fractional']
+tags: ["fractional"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7505696158980317184/
 draft: false
 ---
