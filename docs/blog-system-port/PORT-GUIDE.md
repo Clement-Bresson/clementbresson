@@ -3,7 +3,8 @@
 Source of truth: this repository, in the state that follows the hardening pass of 2026-09-17
 (Astro 7.3, Node 24, sharp 0.35, js-yaml 4, wrangler 4, static output deployed as Cloudflare Workers
 static assets). Every defect found during that pass is already fixed in the source; §6 lists them so
-you know what the target inherits and can re-test it.
+you know what the target inherits and can re-test it. A review later the same day found five more,
+also fixed in the source: §6.1.
 
 In this guide `$SRC` is the root of this repository and `$DST` the root of the target project:
 
@@ -13,6 +14,12 @@ export DST=<path to the target repo>
 ```
 
 Follow the phases in order. Each phase ends with a check; do not start the next one until it passes.
+
+**Without access to this repository**: use `HANDOFF.md` (same folder) instead of this file. It is this
+guide followed by an appendix holding every file of the manifest, byte for byte, and it is what you
+give to Claude Code in the target project ("follow HANDOFF.md to install the blog system"). Wherever
+this guide says "copy from `$SRC`", write the file from the appendix instead. `HANDOFF.md` is generated:
+never edit it, run `node docs/blog-system-port/build-handoff.mjs` after any change to the system.
 
 ---
 
@@ -32,6 +39,32 @@ Plus deploy: `.github/workflows/deploy.yml`, `wrangler.jsonc`, `.node-version`.
 The division of labour is the point of the design: the model never writes `fr.md`/`en.md`, never
 touches images, never hand-writes frontmatter. It produces one JSON spec and two Markdown bodies in
 its scratchpad; the script owns the rest. Keep that boundary intact in the target.
+
+### How one publication runs
+
+1. The author gives Claude a text (either language) and image paths. `AGENTS.md` routes that message to
+   the `blog-article` skill.
+2. Claude runs `article.mjs tags` and `article.mjs index` (slug, tags, titles, descriptions and section
+   headings of every article, about 650 bytes per article) to know the vocabulary and what to link to.
+3. Claude writes three files in its scratchpad: `fr.body.md`, `en.body.md` (cleaned source + faithful
+   translation, with relative cross-links) and `spec.json` (slug, tags, titles, descriptions, images,
+   sources, optional `pubDate`).
+4. `article.mjs create spec.json --build` validates everything first (slug, dates, tag vocabulary, no
+   H1, no Sources heading, no absolute or wrong-language links, every `./image` provided, extension
+   kept), and only then touches the disk: copies images (resize above 1600px, EXIF rotation applied),
+   writes both files with generated frontmatter, runs Prettier on the folder, runs `astro build`.
+5. Claude adds inbound links in 1–3 existing articles (both languages), then `article.mjs check`
+   (cross-language consistency, link targets exist, links to unpublished articles, stray files) and a build.
+6. The author reviews and says "commit and push". CI runs `check` + build and deploys.
+
+Three independent gates reject a bad article: `create` (the spec), `check` (the repository, also in CI),
+and the Astro build itself (zod schema with the tag enum, both languages present, same tags, images exist).
+
+Visibility is decided in one place, `src/lib/publish-date.mjs`, shared by the site (`blog.ts`), the
+sitemap dates (`post-dates.mjs`) and the script: an article is live when `draft` is false and its
+`pubDate` day has started in `PUBLISH_TIME_ZONE`. A future `pubDate` is therefore a scheduled article,
+and the daily cron rebuild of the deploy workflow is what publishes it. `astro dev` and
+`SHOW_DRAFTS=1` show everything.
 
 ---
 
@@ -82,7 +115,8 @@ Formatting: copy `.prettierrc.mjs` and `.prettierignore`, and add the scripts `"
 `"format:check": "prettier --check ."`. The config is Prettier's defaults plus the Astro plugin, so the CLI gives
 exactly what format-on-save gives in an editor with no Prettier settings; if the target already has a Prettier
 config, keep the target's and only add the plugin. `article.mjs create` runs Prettier on the folder it writes, so
-a new article is never the one unformatted file of the repo (it only warns if Prettier is missing).
+a new article is never the one unformatted file of the repo. Prettier must be a devDependency of the
+target: the script calls `npx prettier`, and `npx` tries to download a package it does not find locally.
 
 Copy `.node-version` (content: `24`). The GitHub workflow reads it.
 
@@ -388,7 +422,44 @@ Defects fixed:
 5. **CI did not run `check`**, the only thing that detects a broken internal link. It now runs before the build.
 6. **The skill told Claude to commit only the new folder**, forgetting the articles edited for inbound links.
 
+### 6.1 Second review of 2026-09-17 (also fixed in the source)
+
+Each one was reproduced on a copy of this repository with a real build, and the fix was re-tested the
+same way. If the target keeps its own layout, carry item 2 into it by hand: it is one line.
+
+1. **Impossible dates are accepted and silently moved.** `pubDate: 2026-02-31` passes `create`, `check`
+   and the build, and is published as March 3; `updatedDate: 2026-13-45` becomes 2027-02-14
+   (`Date.parse` and Astro's frontmatter parser both roll over). The likely real case is a 31st in a
+   30-day month. Fix: `isDay()` round-trips the date; used by `create` and `check`, which now also
+   validates `updatedDate`.
+2. **A `</script>` in a title or description breaks the JSON-LD** of the article page, the blog index
+   and its tag pages, and spills markup into `<head>` (`JSON.stringify` does not escape `<`). Fix:
+   `.replace(/</g, "\\u003c")` on the serialised graph in the layout.
+3. **Sitemap `lastmod` is read from the whole file, not the frontmatter.** An article that shows
+   `updatedDate: …` at the start of a line in a code block (an article about this very system) gets that
+   date as `lastmod`. Drafts are also counted in the `lastmod` of the index and tag pages. Fix:
+   `post-dates.mjs` reads only the frontmatter block and skips `draft: true`.
+4. **`check` fails on `.DS_Store`** ("unexpected file") as soon as Finder has opened an article folder.
+   CI is not affected (the file is git-ignored), the local run is. Fix: dotfiles are skipped.
+5. **A link with a title, `[x](/blog/nope/ "title")`, escapes the unknown-article check** and would
+   ship as a 404. Fix: `ARTICLE_LINK` accepts an optional title. Raw HTML `<a href>` links are still not
+   checked; the skill never produces them.
+
+Known limits, left as they are:
+
+- A tag added to `tags.json` without one of its locale blocks passes `check` and fails the build with
+  `Cannot read properties of undefined (reading 'label')` on an unrelated page. `tags.ts` catches it in
+  the editor and in `astro check`, not in `astro build`.
+- iPhone `.heic` photos are refused (not in `IMAGE_EXT`, and images are never converted). Convert first:
+  `sips -s format jpeg in.heic --out out.jpg`.
+- `create --force` on a later day without `pubDate` in the spec resets the date to that day: keep
+  `pubDate` explicit in a spec you intend to re-run.
+- An invalid JSON spec or a missing spec file prints a Node stack trace rather than a `✗` line.
+
 Examined and found **not** to be defects (do not "fix" them in the target):
+
+- `getAllPosts()` memoises in a module variable, yet `astro dev` shows edits and new drafts without a
+  restart: Astro invalidates the module when the content store changes.
 
 - An image saved under another extension (`shot.png` as `cover.jpg`) builds fine: Astro detects the
   format from the content. Converting instead would flatten transparency to black. The script simply
@@ -485,6 +556,9 @@ Expect, without any hand-written file:
 - [ ] negative tests fail loudly: delete `fr.md` → build error "Every blog article needs…"; put a
       different tag or `pubDate` in `fr.md` → `check` error; link to `/blog/nope/` → `check` error;
       `{ "from": "x.png", "as": "x.jpg" }` → `create` error, nothing written
+- [ ] second review (§6.1): `"pubDate": "2026-02-31"` → `create` error; a title
+      containing `</script>` → the page's `application/ld+json` still parses; a fenced `yaml` block with
+      `updatedDate: 2031-05-05` in the body → `<lastmod>` unchanged; a `.DS_Store` in the folder → `check` passes
 - [ ] draft and scheduling: `draft: true`, or a `pubDate` next year, in both files → article absent
       from `dist/`, from the sitemap, RSS and `llms.txt`; present with `SHOW_DRAFTS=1 npm run build`
 - [ ] the whole project copied to a path containing a space still passes `check` and `build`, and the

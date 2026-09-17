@@ -6,10 +6,13 @@ import { isLive } from "./publish-date.mjs";
 
 const root = fileURLToPath(new URL("../content/blog/", import.meta.url));
 
-function readDate(file, key) {
-  const m = readFileSync(file, "utf8").match(
-    new RegExp(`^${key}:\\s*['"]?([^'"\\n]+)`, "m"),
-  );
+function readFrontmatter(file) {
+  const m = readFileSync(file, "utf8").match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  return m ? m[1] : "";
+}
+
+function readDate(frontmatter, key) {
+  const m = frontmatter.match(new RegExp(`^${key}:\\s*['"]?([^'"\\n]+)`, "m"));
   return m ? new Date(m[1].trim()) : undefined;
 }
 
@@ -21,10 +24,12 @@ export function postLastModified() {
     for (const lang of ["en", "fr"]) {
       const file = join(root, slug.name, `${lang}.md`);
       if (!existsSync(file)) continue;
-      const published = readDate(file, "pubDate");
+      const frontmatter = readFrontmatter(file);
+      if (/^draft:\s*true\s*$/m.test(frontmatter)) continue;
+      const published = readDate(frontmatter, "pubDate");
       if (!published || Number.isNaN(published.getTime()) || !isLive(published))
         continue;
-      const date = readDate(file, "updatedDate") ?? published;
+      const date = readDate(frontmatter, "updatedDate") ?? published;
       if (!Number.isNaN(date.getTime())) out.set(`${lang}/${slug.name}`, date);
     }
   }

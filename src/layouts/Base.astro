@@ -157,7 +157,7 @@ const rssHref = filePath(locale, "rss.xml");
 
     <script
       type="application/ld+json"
-      set:html={JSON.stringify(jsonLd)}
+      set:html={JSON.stringify(jsonLd).replace(/</g, "\\u003c")}
     ></script>
     <Font cssVariable="--font-newsreader" preload />
     <Font cssVariable="--font-geist" preload />

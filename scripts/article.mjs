@@ -34,6 +34,13 @@ const IMAGE_EXT = /\.(jpe?g|png|webp|avif|gif|svg)$/i;
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 
+function isDay(value) {
+  const s = String(value ?? "");
+  if (!DAY.test(s)) return false;
+  const d = new Date(`${s}T00:00:00Z`);
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s;
+}
+
 const blogPrefix = (locale) =>
   locale === DEFAULT_LOCALE ? "/blog/" : `/${locale}/blog/`;
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -42,7 +49,7 @@ const OWN_SITE_LINK = new RegExp(
 );
 const prefixed = LOCALES.filter((l) => l !== DEFAULT_LOCALE).join("|");
 const ARTICLE_LINK = new RegExp(
-  `\\]\\(\\/(?:(?:${prefixed})\\/)?blog\\/([a-z0-9-]+)\\/?(?:#[^)]*)?\\)`,
+  `\\]\\(\\/(?:(?:${prefixed})\\/)?blog\\/([a-z0-9-]+)\\/?(?:#[^)\\s]*)?(?:\\s+"[^"]*")?\\)`,
   "g",
 );
 const IMAGE_REF = /!\[[^\]]*\]\(\.\/([^)\s]+)\)/g;
@@ -109,11 +116,11 @@ function validateSpec(spec, knownTags) {
   const errors = [];
   if (!SLUG.test(spec.slug ?? ""))
     errors.push("slug must be lowercase kebab-case");
-  if (!DAY.test(spec.pubDate ?? "") || Number.isNaN(Date.parse(spec.pubDate)))
-    errors.push("pubDate must be YYYY-MM-DD");
+  if (!isDay(spec.pubDate))
+    errors.push("pubDate must be a real YYYY-MM-DD date");
   if (
     spec.updatedDate &&
-    (!DAY.test(spec.updatedDate) || spec.updatedDate < spec.pubDate)
+    (!isDay(spec.updatedDate) || spec.updatedDate < spec.pubDate)
   )
     errors.push("updatedDate must be YYYY-MM-DD and not before pubDate");
   if (!Array.isArray(spec.tags) || spec.tags.length < 1 || spec.tags.length > 2)
@@ -377,9 +384,14 @@ async function check(slug) {
       const desc = String(data.description ?? "");
       if (desc.length < 120 || desc.length > 160)
         warn(`${s}/${locale}.md description is ${desc.length} chars`);
-      if (!DAY.test(String(data.pubDate ?? "")))
-        report(`${locale}.md pubDate must be YYYY-MM-DD`);
-      if (data.updatedDate && String(data.updatedDate) < String(data.pubDate))
+      if (!isDay(data.pubDate))
+        report(`${locale}.md pubDate must be a real YYYY-MM-DD date`);
+      if (data.updatedDate && !isDay(data.updatedDate))
+        report(`${locale}.md updatedDate must be a real YYYY-MM-DD date`);
+      else if (
+        data.updatedDate &&
+        String(data.updatedDate) < String(data.pubDate)
+      )
         report(`${locale}.md updatedDate is before pubDate`);
       const tags = Array.isArray(data.tags) ? data.tags : [];
       if (tags.length < 1 || tags.length > 2)
@@ -445,6 +457,7 @@ async function check(slug) {
     }
 
     for (const f of await readdir(dir)) {
+      if (f.startsWith(".")) continue;
       if (IMAGE_EXT.test(f)) {
         if (!Object.values(loaded).some((a) => a.raw.includes(f)))
           warn(`${s}/${f} is not referenced by any language file`);
