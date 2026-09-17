@@ -13,14 +13,14 @@ build) is done by the deterministic script `scripts/article.mjs`. Never write th
 
 - The text, in French or English (a draft, notes, or a LinkedIn post). Ask only if the text is missing.
 - Images, if any (paths on disk). The first one is the cover unless the user says otherwise.
-- Optional: publication date (default today), the LinkedIn post URL, sources.
+- Optional: publication date (the script defaults `pubDate` to today; a later day schedules the article), the LinkedIn post URL, sources.
 
 Do not ask for slug, description or tags: propose them.
 
 ## Steps
 
 1. `node scripts/article.mjs tags` to see the tag vocabulary. Pick 1–2 tags. If none fits, add one to
-   `src/data/tags.ts` (key + EN/FR label and description) before continuing.
+   `src/data/tags.json` (key + EN/FR label and description) before continuing.
 2. Prepare the source language version:
    - Keep the author's voice, first person, and tu/vous choice. Fix typos and accents. Do not add facts.
    - If it comes from LinkedIn, remove every call-to-action ("n'hésitez pas à me suivre", "DM ouverts",
@@ -39,21 +39,24 @@ Do not ask for slug, description or tags: propose them.
 4. Judgment fields, per language: `title` (≤ 65 chars, specific, no clickbait), `description`
    (120–160 chars, one real sentence: meta description and excerpt), `coverAlt` if there is a cover.
    Slug: lowercase kebab-case, English, stable forever.
-5. Write the spec JSON to the scratchpad (not the project) and run:
+5. In the scratchpad (not the project), write `fr.body.md`, `en.body.md` and `spec.json`, then run:
    `node scripts/article.mjs create <spec.json> --build`
-   Fix anything it reports and re-run with `--force`.
+   Fix anything it reports and re-run with `--force`. Bodies go in files, not in the JSON: plain
+   Markdown needs no escaping, which matters for code samples with quotes and backslashes.
 6. Inbound links (see "Cross-linking"): edit the existing articles that should point to the new one,
    then `node scripts/article.mjs check` and `npm run build`. Show the two URLs printed in step 5 and
    list the articles you linked from.
-7. Do not commit unless asked. When asked, commit only `src/content/blog/<slug>/` (and `src/data/tags.ts`
-   if a tag was added) and push; the deploy is automatic.
+7. Do not commit unless asked. When asked, commit the new `src/content/blog/<slug>/` folder, the existing
+   articles you edited for inbound links, and `src/data/tags.json` if a tag was added. Then push; the
+   deploy is automatic.
 
 ## Cross-linking
 
 Every article should be woven into the existing ones. Do this on every new article:
 
 1. `node scripts/article.mjs index` prints every existing article with slug, tags, titles, descriptions
-   and section headings. Read it fully; open an article file only when you need to check wording.
+   and section headings (`index --tag <key>` narrows it to one topic once the blog is large). Read it
+   fully; open an article file only when you need to check wording.
 2. Outbound: in the new article, link the first natural mention of any concept another article covers
    (a named architecture, a testing notion, harnesses, the fractional model…). One link per target.
    Prefer linking existing words over adding text. If a strongly related article has no natural
@@ -63,7 +66,8 @@ Every article should be woven into the existing ones. Do this on every new artic
    mention in BOTH fr.md and en.md with the right prefix, or add one bridging sentence at the end.
    Do not touch other content and do not set `updatedDate` for a link-only edit.
 4. Never link the article to itself, never link inside headings or code, never link a target that
-   does not exist (`check` fails on unknown slugs).
+   does not exist (`check` fails on both). Do not add inbound links to an article scheduled for a
+   later day: they would 404 until then (`check` warns). Add them once it is live.
 
 The "Read next" block is generated from shared tags, so tags matter too: choose them for the cluster
 the article belongs to, not for breadth.
@@ -95,22 +99,27 @@ the article belongs to, not for breadth.
     "title": "…",
     "description": "…",
     "coverAlt": "…",
-    "body": "markdown…"
+    "bodyFile": "fr.body.md"
   },
   "en": {
     "title": "…",
     "description": "…",
     "coverAlt": "…",
-    "body": "markdown…"
+    "bodyFile": "en.body.md"
   }
 }
 ```
 
-`updatedDate`, `cover`, `images`, `linkedin`, `sources`, `coverAlt` and `draft` are optional. Image
-paths in `images[].from` are resolved relative to the spec file, or absolute. Images wider than
-1600px are resized on copy. `cover` must be one of the copied images.
+`pubDate` (default: today), `updatedDate`, `cover`, `images`, `linkedin`, `sources`, `coverAlt` and
+`draft` are optional. Dates are `YYYY-MM-DD`. `bodyFile` and `images[].from` are resolved relative to the
+spec file, or absolute; a short body may be given inline as `"body"` instead of `bodyFile`. Images
+wider than 1600px are resized on copy (phone photos are rotated upright). `images[].as` must be
+lowercase, without spaces, and keep the extension of its source: images are never converted. `cover`
+must be one of the copied images.
 
 ## Updating an existing article
 
 Edit `src/content/blog/<slug>/{fr,en}.md` directly, set `updatedDate` in both, keep both languages in
-sync, then run `node scripts/article.mjs check <slug>` and `npm run build`.
+sync, then run `node scripts/article.mjs check <slug>` and `npm run build`. `check` fails when `pubDate`,
+tags or the draft flag differ between the two files, and warns when `updatedDate`, cover, headings,
+images, code blocks or link targets do.

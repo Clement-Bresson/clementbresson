@@ -99,11 +99,7 @@ export function blogNode(
   };
 }
 
-export function tagPageNode(
-  site: URL | undefined,
-  locale: Locale,
-  tag: TagSummary,
-): Node {
+export function tagPageNode(locale: Locale, tag: TagSummary): Node {
   const t = getCopy(locale);
   const url = getAbsoluteLocaleUrl(locale, tagPath(tag.id));
   return {

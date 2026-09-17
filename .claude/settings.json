@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/article.mjs *)",
+      "Bash(npm run article *)",
+      "Bash(npm run article:check)",
+      "Bash(npm run build)"
+    ]
+  }
+}

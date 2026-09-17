@@ -55,19 +55,18 @@ Review the output, then commit and push. The deploy is automatic.
 
 `scripts/article.mjs` is deterministic and does not use any AI.
 
-| Command                                    | What it does                                                                                                              |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| `npm run article create spec.json --build` | Creates the folder from a JSON spec: copies images (resizing above 1600px), writes `fr.md` and `en.md`, validates, builds |
-| `npm run article check [slug]`             | Validates one or all articles: both languages, same tags, known tags, images present, internal links resolve              |
-| `npm run article index`                    | Prints every article with titles, descriptions and headings, to choose link targets                                       |
-| `npm run article tags`                     | Lists the tag vocabulary                                                                                                  |
+| Command                                    | What it does                                                                                                                                                           |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run article create spec.json --build` | Creates the folder from a JSON spec: copies images (resizing above 1600px, phone photos rotated upright), writes `fr.md` and `en.md`, validates, builds                |
+| `npm run article check [slug]`             | Validates one or all articles: both languages in sync (tags, `pubDate`, draft), known tags, images present, internal links resolve. Also runs in CI before every build |
+| `npm run article index [--tag key]`        | Prints every article (or one topic) with titles, descriptions and headings, to choose link targets                                                                     |
+| `npm run article tags`                     | Lists the tag vocabulary                                                                                                                                               |
 
 Minimal spec:
 
 ```json
 {
   "slug": "my-article",
-  "pubDate": "2026-09-20",
   "tags": ["architecture"],
   "cover": "cover.jpg",
   "images": [{ "from": "/path/to/photo.jpg", "as": "cover.jpg" }],
@@ -75,31 +74,32 @@ Minimal spec:
     "title": "…",
     "description": "…",
     "coverAlt": "…",
-    "body": "markdown…"
+    "bodyFile": "fr.body.md"
   },
   "en": {
     "title": "…",
     "description": "…",
     "coverAlt": "…",
-    "body": "markdown…"
+    "bodyFile": "en.body.md"
   }
 }
 ```
 
-Optional fields: `updatedDate`, `linkedin` (URL of the original post, shown as attribution), `sources` (list of `{ title, author?, year?, url? }`, rendered as a Sources section), `draft`. Full format in the skill file.
+`bodyFile` is a Markdown file next to the spec (an inline `"body"` string works too). Optional fields: `pubDate` (`YYYY-MM-DD`, defaults to today), `updatedDate`, `linkedin` (URL of the original post, shown as attribution), `sources` (list of `{ title, author?, year?, url? }`, rendered as a Sources section), `draft`. Full format in the skill file.
 
 ### Rules worth knowing
 
-- Frontmatter `tags` must be keys of `src/data/tags.ts`, identical in both languages. To add a topic, add it there first with an EN and FR label and description. A tag page appears once an article uses it.
+- Frontmatter `tags` must be keys of `src/data/tags.json`, identical in both languages. To add a topic, add it there first with an EN and FR label and description. A tag page appears once an article uses it.
 - Use `##` headings only: the layout renders the title as H1.
 - Link other articles with relative URLs: `/blog/<slug>/` in `en.md`, `/fr/blog/<slug>/` in `fr.md`.
 - `draft: true` shows in `npm run dev` but is excluded from the build (`SHOW_DRAFTS=1 npm run build` includes drafts).
+- Scheduling: give a future `pubDate` and push. The article stays out of the build until that day (Europe/Paris); the deploy workflow rebuilds every morning and publishes it.
 - Set `updatedDate` when you revise an article: it feeds `dateModified` and the sitemap.
 - Everything for SEO and AI search is generated at build: canonical and hreflang tags, Open Graph, JSON-LD (Person, WebSite, Blog, BlogPosting with citations, breadcrumbs), sitemap with `lastmod`, robots.txt allowing AI crawlers, llms.txt, RSS.
 
 ## Deploy (Cloudflare Workers, via GitHub Actions)
 
-Every push to `main` runs `.github/workflows/deploy.yml`: it builds the site, then deploys `dist/` as a Cloudflare Worker with static assets using `wrangler.jsonc`. Pull requests only run the build.
+Every push to `main`, and a daily schedule (for scheduled articles), runs `.github/workflows/deploy.yml`: it validates the articles, builds the site, then deploys `dist/` as a Cloudflare Worker with static assets using `wrangler.jsonc`. Pull requests only run the build.
 
 One-time setup:
 

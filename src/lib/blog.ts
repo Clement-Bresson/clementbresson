@@ -2,10 +2,13 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { getAbsoluteLocaleUrl, getRelativeLocaleUrl } from "astro:i18n";
 import { tagCopy, tagIds, type TagId } from "../data/tags";
 import { locales, type Locale } from "../i18n";
+import { isLive } from "./publish-date.mjs";
 
 export type Post = CollectionEntry<"blog"> & { slug: string; locale: Locale };
 
-const includeDrafts = import.meta.env.DEV || process.env.SHOW_DRAFTS === "1";
+/** Drafts and articles scheduled for a later day: shown in `astro dev`, kept out of production builds. */
+const includeUnpublished =
+  import.meta.env.DEV || process.env.SHOW_DRAFTS === "1";
 
 function parseId(id: string): { slug: string; locale: Locale } {
   const [slug, locale] = id.split("/");
@@ -28,7 +31,7 @@ export function getAllPosts(): Promise<Post[]> {
   cache ??= (async () => {
     const entries = await getCollection(
       "blog",
-      (e) => includeDrafts || !e.data.draft,
+      (e) => includeUnpublished || (!e.data.draft && isLive(e.data.pubDate)),
     );
     const posts = entries.map((e) => ({ ...e, ...parseId(e.id) }));
 

@@ -1,4 +1,5 @@
 import type { Locale } from "../i18n/ui";
+import vocabulary from "./tags.json";
 
 interface TagCopy {
   label: string;
@@ -7,123 +8,19 @@ interface TagCopy {
 }
 
 /**
- * The tag vocabulary. Keys are URL slugs shared by both languages
+ * The tag vocabulary lives in `tags.json` so `scripts/article.mjs` reads the
+ * same source. Keys are URL slugs shared by both languages
  * (`/blog/tag/<key>/` and `/fr/blog/tag/<key>/`), values are the localized
- * labels. Article frontmatter may only use keys listed here, which keeps the
+ * labels. Article frontmatter may only use keys listed there, which keeps the
  * taxonomy deliberate and every tag page paired across languages.
  *
- * Add a tag here first, then use it in articles. Never rename a key that has
+ * Add a tag there first, then use it in articles. Never rename a key that has
  * been published: the URL would change.
  */
-export const tags = {
-  architecture: {
-    en: {
-      label: "Architecture",
-      description:
-        "Designing systems that stay simple to change as the product grows.",
-    },
-    fr: {
-      label: "Architecture",
-      description:
-        "Concevoir des systèmes qui restent simples à faire évoluer avec le produit.",
-    },
-  },
-  "code-review": {
-    en: {
-      label: "Code review",
-      description:
-        "Reviewing code so it teaches, protects the codebase and keeps shipping fast.",
-    },
-    fr: {
-      label: "Revue de code",
-      description:
-        "Relire le code pour transmettre, protéger la base de code et continuer à livrer vite.",
-    },
-  },
-  "ai-harnesses": {
-    en: {
-      label: "AI harnesses",
-      description:
-        "Building the tooling, guardrails and workflows that make AI coding agents productive.",
-    },
-    fr: {
-      label: "Harnais IA",
-      description:
-        "Construire l’outillage, les garde-fous et les workflows qui rendent les agents IA productifs.",
-    },
-  },
-  testing: {
-    en: {
-      label: "Testing",
-      description:
-        "Tests that actually catch bugs: doubles, boundaries, mutation testing and what coverage hides.",
-    },
-    fr: {
-      label: "Tests",
-      description:
-        "Des tests qui attrapent vraiment les bugs : doublures, frontières, mutation testing et ce que le coverage cache.",
-    },
-  },
-  "ai-era": {
-    en: {
-      label: "The AI era",
-      description:
-        "How AI is changing developer work, the market for developers and what gets valued.",
-    },
-    fr: {
-      label: "L’ère de l’IA",
-      description:
-        "Comment l’IA change le travail des développeurs, leur marché et ce qui est valorisé.",
-    },
-  },
-  "design-system": {
-    en: {
-      label: "Design system",
-      description:
-        "Components, tokens and conventions that keep a product coherent.",
-    },
-    fr: {
-      label: "Design system",
-      description:
-        "Composants, tokens et conventions qui gardent un produit cohérent.",
-    },
-  },
-  "leading-devs": {
-    en: {
-      label: "Leading developers",
-      description:
-        "Running small engineering teams: priorities, rituals, trust and pace.",
-    },
-    fr: {
-      label: "Encadrer les devs",
-      description:
-        "Faire tourner une petite équipe technique : priorités, rituels, confiance et rythme.",
-    },
-  },
-  fractional: {
-    en: {
-      label: "Fractional work",
-      description:
-        "What a part-time tech lead can and cannot do for a project, and how to work that way.",
-    },
-    fr: {
-      label: "Temps partagé",
-      description:
-        "Ce qu’un tech lead à temps partiel peut, ou non, apporter à un projet, et comment travailler ainsi.",
-    },
-  },
-  site: {
-    en: {
-      label: "This site",
-      description: "Notes about how clementbresson.com is built and published.",
-    },
-    fr: {
-      label: "Ce site",
-      description:
-        "Notes sur la façon dont clementbresson.com est construit et publié.",
-    },
-  },
-} satisfies Record<string, Record<Locale, TagCopy>>;
+export const tags = vocabulary satisfies Record<
+  string,
+  Record<Locale, TagCopy>
+>;
 
 export type TagId = keyof typeof tags;
 

@@ -1,0 +1,85 @@
+---
+import { getImage } from "astro:assets";
+import { getAbsoluteLocaleUrl } from "astro:i18n";
+import portrait from "../assets/portrait.png";
+import { tagCopy } from "../data/tags";
+import { getCopy } from "../i18n";
+import Base from "../layouts/Base.astro";
+import {
+  blogPath,
+  postPath,
+  readingMinutes,
+  wordCount,
+  type Post,
+} from "../lib/blog";
+import { blogPostingNode, breadcrumbNode } from "../lib/schema";
+import BlogPost from "./BlogPost.astro";
+
+/** Full article page (head, schema and body), shared by the page file of every locale. */
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { locale, data } = post;
+const t = getCopy(locale);
+
+const coverUrl = data.cover
+  ? new URL(
+      (
+        await getImage({
+          src: data.cover,
+          width: 1200,
+          format: "jpg",
+          quality: 82,
+        })
+      ).src,
+      Astro.site,
+    ).href
+  : undefined;
+
+const fallbackImageUrl = new URL(
+  (await getImage({ src: portrait, width: 1200, format: "jpg", quality: 82 }))
+    .src,
+  Astro.site,
+).href;
+
+const schema = [
+  blogPostingNode(Astro.site, post, {
+    coverUrl,
+    fallbackImageUrl,
+    wordCount: wordCount(post.body),
+    readingMinutes: readingMinutes(post.body),
+  }),
+  breadcrumbNode([
+    { name: t.name, url: getAbsoluteLocaleUrl(locale) },
+    { name: t.blog.title, url: getAbsoluteLocaleUrl(locale, blogPath) },
+    {
+      name: data.title,
+      url: getAbsoluteLocaleUrl(locale, postPath(post.slug)),
+    },
+  ]),
+];
+---
+
+<Base
+  locale={locale}
+  path={postPath(post.slug)}
+  title={data.title}
+  description={data.description}
+  ogType="article"
+  ogImage={
+    data.cover
+      ? { src: data.cover, alt: data.coverAlt ?? data.title }
+      : undefined
+  }
+  article={{
+    published: data.pubDate,
+    modified: data.updatedDate,
+    tags: data.tags.map((id) => tagCopy(id, locale).label),
+    section: data.tags[0] ? tagCopy(data.tags[0], locale).label : undefined,
+  }}
+  schema={schema}
+>
+  <BlogPost post={post} />
+</Base>

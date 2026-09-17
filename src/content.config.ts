@@ -1,7 +1,7 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
-import { tagIds } from "./src/data/tags";
+import { tagIds } from "./data/tags";
 
 /**
  * Blog articles. One folder per article, always with both languages:
@@ -30,10 +30,10 @@ const blog = defineCollection({
       /** Relative to the article folder, e.g. `./cover.jpg`. Used for OG and schema. */
       cover: image().optional(),
       coverAlt: z.string().optional(),
-      /** Only keys of `src/data/tags.ts` are accepted. Both languages of an article must carry the same tags. */
+      /** Only keys of `src/data/tags.json` are accepted. Both languages of an article must carry the same tags. */
       tags: z.array(z.enum(tagIds)).default([]),
       /** URL of the original LinkedIn post, when the article started as one. Rendered as attribution and as schema `sameAs`. */
-      linkedin: z.string().url().optional(),
+      linkedin: z.url().optional(),
       /** Works the article cites. Rendered as a Sources section and as schema `citation`. */
       sources: z
         .array(
@@ -41,7 +41,7 @@ const blog = defineCollection({
             title: z.string().min(1),
             author: z.string().optional(),
             year: z.number().int().optional(),
-            url: z.string().url().optional(),
+            url: z.url().optional(),
           }),
         )
         .default([]),

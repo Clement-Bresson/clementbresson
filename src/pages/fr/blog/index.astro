@@ -1,30 +1,5 @@
 ---
-import BlogIndex from "../../../components/BlogIndex.astro";
-import { getAbsoluteLocaleUrl } from "astro:i18n";
-import Base from "../../../layouts/Base.astro";
-import { getCopy } from "../../../i18n";
-import { blogPath, getPosts, getTags } from "../../../lib/blog";
-import { blogNode, breadcrumbNode } from "../../../lib/schema";
-
-const locale = "fr";
-const t = getCopy(locale);
-const posts = await getPosts(locale);
-const tags = await getTags(locale);
-const schema = [
-  blogNode(Astro.site, locale, posts),
-  breadcrumbNode([
-    { name: t.name, url: getAbsoluteLocaleUrl(locale) },
-    { name: t.blog.title, url: getAbsoluteLocaleUrl(locale, blogPath) },
-  ]),
-];
+import BlogListPage from "../../../components/BlogListPage.astro";
 ---
 
-<Base
-  locale={locale}
-  path={blogPath}
-  title={t.blog.metaTitle}
-  description={t.blog.description}
-  schema={schema}
->
-  <BlogIndex locale={locale} posts={posts} tags={tags} />
-</Base>
+<BlogListPage locale="fr" />

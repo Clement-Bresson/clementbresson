@@ -1,9 +1,12 @@
 // Used by astro.config to set per-URL <lastmod> in the sitemap. The config
 // runs before the content layer exists, so this reads frontmatter directly.
+// Config-only: it locates the articles from its own path, which is wrong once bundled.
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { isLive } from "./publish-date.mjs";
 
-const root = new URL("../content/blog/", import.meta.url).pathname;
+const root = fileURLToPath(new URL("../content/blog/", import.meta.url));
 
 function readDate(file, key) {
   const m = readFileSync(file, "utf8").match(
@@ -12,7 +15,7 @@ function readDate(file, key) {
   return m ? new Date(m[1].trim()) : undefined;
 }
 
-/** Map of "<lang>/<slug>" -> last modification date, e.g. "fr/hello" */
+/** Map of "<lang>/<slug>" -> last modification date, e.g. "fr/hello". Scheduled articles are left out. */
 export function postLastModified() {
   const out = new Map();
   if (!existsSync(root)) return out;
@@ -21,9 +24,11 @@ export function postLastModified() {
     for (const lang of ["en", "fr"]) {
       const file = join(root, slug.name, `${lang}.md`);
       if (!existsSync(file)) continue;
-      const date = readDate(file, "updatedDate") ?? readDate(file, "pubDate");
-      if (date && !Number.isNaN(date.getTime()))
-        out.set(`${lang}/${slug.name}`, date);
+      const published = readDate(file, "pubDate");
+      if (!published || Number.isNaN(published.getTime()) || !isLive(published))
+        continue;
+      const date = readDate(file, "updatedDate") ?? published;
+      if (!Number.isNaN(date.getTime())) out.set(`${lang}/${slug.name}`, date);
     }
   }
   return out;

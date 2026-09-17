@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # Daily rebuild: publishes articles whose pubDate has arrived (04:10 UTC = early morning in Paris).
+  schedule:
+    - cron: "10 4 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -25,6 +28,7 @@ jobs:
           node-version-file: .node-version
           cache: npm
       - run: npm ci
+      - run: npm run article:check
       - run: npm run build
       - uses: actions/upload-artifact@v5
         with:

@@ -1,0 +1,49 @@
+---
+// BlogIndex before Base: the import order decides the order of their styles in the page.
+import BlogIndex from "./BlogIndex.astro";
+import { getAbsoluteLocaleUrl } from "astro:i18n";
+import { getCopy, type Locale } from "../i18n";
+import Base from "../layouts/Base.astro";
+import {
+  blogPath,
+  getPosts,
+  getTags,
+  tagPath,
+  type TagSummary,
+} from "../lib/blog";
+import { blogNode, breadcrumbNode, tagPageNode } from "../lib/schema";
+
+/** Full list page (head, schema and body), shared by the page files of every locale: the blog index, or a tag page when `tag` is set. */
+interface Props {
+  locale: Locale;
+  tag?: TagSummary;
+}
+
+const { locale, tag } = Astro.props;
+const t = getCopy(locale);
+const tags = await getTags(locale);
+const posts = tag ? tag.posts : await getPosts(locale);
+const crumbs = [
+  { name: t.name, url: getAbsoluteLocaleUrl(locale) },
+  { name: t.blog.title, url: getAbsoluteLocaleUrl(locale, blogPath) },
+];
+const schema = tag
+  ? [
+      tagPageNode(locale, tag),
+      breadcrumbNode([
+        ...crumbs,
+        { name: tag.label, url: getAbsoluteLocaleUrl(locale, tagPath(tag.id)) },
+      ]),
+    ]
+  : [blogNode(Astro.site, locale, posts), breadcrumbNode(crumbs)];
+---
+
+<Base
+  locale={locale}
+  path={tag ? tagPath(tag.id) : blogPath}
+  title={tag ? `${tag.label} — ${t.blog.metaTitle}` : t.blog.metaTitle}
+  description={tag ? tag.description : t.blog.description}
+  schema={schema}
+>
+  <BlogIndex locale={locale} posts={posts} tags={tags} tag={tag} />
+</Base>
