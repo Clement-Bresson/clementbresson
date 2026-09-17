@@ -1,5 +1,4 @@
-// Prettier defaults on purpose: the same result as format-on-save in an editor
-// with no Prettier settings. The plugin is only what makes .astro files formattable.
+// Prettier defaults on purpose: identical to format-on-save in the editor. Do not add options.
 /** @type {import("prettier").Config} */
 export default {
   plugins: ["prettier-plugin-astro"],

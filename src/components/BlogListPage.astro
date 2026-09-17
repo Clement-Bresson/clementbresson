@@ -13,7 +13,6 @@ import {
 } from "../lib/blog";
 import { blogNode, breadcrumbNode, tagPageNode } from "../lib/schema";
 
-/** Full list page (head, schema and body), shared by the page files of every locale: the blog index, or a tag page when `tag` is set. */
 interface Props {
   locale: Locale;
   tag?: TagSummary;

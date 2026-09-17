@@ -1,7 +1,5 @@
 import type { APIRoute } from "astro";
 
-// Search engines and AI crawlers are all welcome; the explicit entries make the
-// intent unambiguous for crawlers that look for their own user-agent block.
 const aiCrawlers = [
   "GPTBot",
   "OAI-SearchBot",

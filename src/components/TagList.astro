@@ -7,9 +7,7 @@ import { tagPath } from "../lib/blog";
 interface Props {
   locale: Locale;
   tags: { id: TagId; label: string; count?: number }[];
-  /** Optional heading rendered before the list (visually, as a label). */
   label?: string;
-  /** Tag currently being viewed, rendered as text rather than a link. */
   current?: TagId;
   class?: string;
   style?: string;

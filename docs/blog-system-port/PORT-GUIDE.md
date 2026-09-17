@@ -178,7 +178,7 @@ must return nothing.
 
 ### 4.1 `scripts/article.mjs`
 
-Everything site-specific is in one block at the top (lines 26–31); the regexes and printed URLs derive from it.
+Everything site-specific is in one block of four constants at the top (`SITE` to `CALL_TO_ACTION`); the regexes and printed URLs derive from it.
 
 | Constant         | Current                                  | Change to                                                                                           |
 | ---------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------- |
@@ -187,7 +187,7 @@ Everything site-specific is in one block at the top (lines 26–31); the regexes
 | `DEFAULT_LOCALE` | `'en'`                                   | the locale served without a URL prefix                                                              |
 | `CALL_TO_ACTION` | French/English LinkedIn sign-off phrases | the author's real sign-off phrases, or `/$^/` if drafts do not come from a social platform          |
 
-Also line 109, the LinkedIn post URL validation: keep it if the `linkedin` frontmatter field is kept, delete it with the field otherwise.
+Also the LinkedIn post URL validation in `validateSpec` (the `spec.linkedin` test): keep it if the `linkedin` frontmatter field is kept, delete it with the field otherwise.
 `MAX_IMAGE_WIDTH = 1600`: keep unless the target's content column is wider than 800 CSS px.
 
 ### 4.2 `src/data/tags.json`
@@ -201,17 +201,17 @@ Replace the whole vocabulary. Rules the rest of the system depends on:
 
 ### 4.3 `src/lib/llms.ts`
 
-`header()` (lines 12–32) builds the intro from home-page copy keys `name`, `title`, `p1`, `p2`, `p3`.
+`header()` builds the intro from home-page copy keys `name`, `title`, `p1`, `p2`, `p3`.
 Replace with the target's equivalents: one H1 (site/author name), one blockquote summary, one
-paragraph. Lines 13–14 and 26–29 hard-code `'en'` and `'fr'`. `langName` (line 10) maps locale → display name.
+paragraph. `header()` hard-codes `'en'` and `'fr'` (its `getCopy` calls and the four page links). `langName` maps locale → display name.
 
 ### 4.4 `src/lib/schema.ts`
 
-- Line 16: fallback origin `https://clementbresson.com` → target origin.
-- `personNode` (lines 21–36): `name`, `jobTitle`, `description` come from i18n keys `name`, `title`, `p1`.
-  Line 31 `alumniOf: ESSEC Business School` → replace or delete. Line 33 excludes the tag `'site'` from
-  `knowsAbout`: replace with the target's meta-tag key or remove the filter. Line 34 `sameAs` is imported
-  from `src/data/links.ts` (line 7): provide an exported `sameAs: string[]` of public profile URLs somewhere
+- `siteUrl`: fallback origin `https://clementbresson.com` → target origin.
+- `personNode`: `name`, `jobTitle`, `description` come from i18n keys `name`, `title`, `p1`.
+  `alumniOf: ESSEC Business School` → replace or delete. The `knowsAbout` line excludes the tag `'site'` from
+  `knowsAbout`: replace with the target's meta-tag key or remove the filter. `sameAs` is imported
+  from `src/data/links.ts`: provide an exported `sameAs: string[]` of public profile URLs somewhere
   and repoint the import.
 - **If the site belongs to an organisation**: change `'@type': 'Person'` to `'Organization'`, replace
   `jobTitle/alumniOf/knowsLanguage/knowsAbout` by `logo`, rename `#person` to `#org`
@@ -220,13 +220,13 @@ paragraph. Lines 13–14 and 26–29 hard-code `'en'` and `'fr'`. `langName` (li
 
 ### 4.5 `src/components/BlogPostPage.astro`
 
-Line 4 imports `../assets/portrait.png` as the fallback image for articles without cover (used for
+It imports `../assets/portrait.png` as the fallback image for articles without cover (used for
 `BlogPosting.image`). Point it to the target's default social image (must live under `src/` so
-`getImage` can process it). `Base.astro` has the same import (line 5) for the default `og:image`.
+`getImage` can process it). `Base.astro` has the same import for the default `og:image`.
 
 ### 4.6 `src/lib/publish-date.mjs` and `src/lib/post-dates.mjs`
 
-- `publish-date.mjs` line 5 `PUBLISH_TIME_ZONE = 'Europe/Paris'`: the time zone in which a `pubDate` "starts". It
+- `publish-date.mjs` `PUBLISH_TIME_ZONE = 'Europe/Paris'`: the time zone in which a `pubDate` "starts". It
   decides when a scheduled article goes live and what "today" means for the default `pubDate`.
 - `post-dates.mjs` `['en', 'fr']`: the locale list (this file cannot import the TypeScript i18n module: it is
   loaded by `astro.config.mjs` before Vite exists). Never import `post-dates.mjs` from site code: it finds
@@ -234,7 +234,7 @@ Line 4 imports `../assets/portrait.png` as the fallback image for articles witho
 
 ### 4.7 Deploy files
 
-`wrangler.jsonc`: `name` (line 5), `routes` patterns (lines 18–19), `compatibility_date`. Keep
+`wrangler.jsonc`: `name`, the two `routes` patterns, `compatibility_date`. Keep
 `assets.directory: ./dist`, `not_found_handling: 404-page` (requires a `src/pages/404.astro`),
 `html_handling: auto-trailing-slash`, `workers_dev: false`, `preview_urls: false` (avoids duplicate
 hosts being indexed). For the very first deploy before the domain is attached, temporarily set
@@ -245,7 +245,7 @@ in the early morning of `PUBLISH_TIME_ZONE`. Secrets required in the target repo
 `CLOUDFLARE_API_TOKEN` (template _Edit Cloudflare Workers_) and `CLOUDFLARE_ACCOUNT_ID`. GitHub
 disables scheduled workflows after 60 days without repository activity; any push re-enables them.
 
-`astro.config.mjs` line 8: default `site`. See §5.2 for the merge.
+`astro.config.mjs`: the default of the `site` constant. See §5.2 for the merge.
 
 ### 4.8 Only if the target's locales differ from `en` (default, unprefixed) + `fr`
 
@@ -254,13 +254,13 @@ disables scheduled workflows after 60 days without repository activity; any push
 - page folders: `src/pages/blog/**` = default locale, `src/pages/<locale>/blog/**` = each prefixed locale;
   the three files of a folder hard-code their locale literal (`'en'` / `'fr'`). Copy a folder and change the literal.
 
-- `src/i18n/ui.ts:1–3` `locales`, `defaultLocale`; one copy file per locale in `src/i18n/`
-- `src/content.config.ts:19` glob `'*/{en,fr}.md'`
-- `astro.config.mjs:13` `postUrl` regex `(fr)`, `:15` `listUrl` regex, `:25` sitemap i18n map, `:30` `?? 'en'`, `:40–41`
+- `src/i18n/ui.ts` `locales`, `defaultLocale`; one copy file per locale in `src/i18n/`
+- `src/content.config.ts` loader glob `'*/{en,fr}.md'`
+- `astro.config.mjs`: `postUrl` regex `(fr)`, `listUrl` regex, the sitemap `i18n` map, the `?? 'en'` in `serialize`, the `i18n` block
 - `src/lib/post-dates.mjs` locale list
-- `src/lib/blog.ts:92` `locale === 'fr' ? 'fr-FR' : 'en-US'` (date display: `25 août 2026` vs `August 25, 2026`)
+- `src/lib/blog.ts` `formatDate`: `locale === 'fr' ? 'fr-FR' : 'en-US'` (date display: `25 août 2026` vs `August 25, 2026`)
 - `src/lib/llms.ts` (§4.3)
-- `src/layouts/Base.astro:65` `x-default` → `'en'`
+- `src/layouts/Base.astro` `x-default` → `'en'`
 - `scripts/article.mjs` `LOCALES`, `DEFAULT_LOCALE`
 - `src/data/tags.json`: one block per locale in every tag
 - one `src/pages/<locale>/rss.xml.ts` per prefixed locale, and its line in `public/_headers`
@@ -273,7 +273,7 @@ disables scheduled workflows after 60 days without repository activity; any push
 
 ### 5.1 `src/content.config.ts`
 
-If the target already has collections, add the `blog` collection (lines 17–51 of the source) and export
+If the target already has collections, add the `blog` collection (the whole `defineCollection` call of the source) and export
 it alongside the others. The `generateId` that strips `.md` is required: `src/lib/blog.ts:parseId`
 expects ids of the form `<slug>/<locale>`.
 
@@ -293,7 +293,7 @@ const listUrl = /^\/(?:fr\/)?blog\/(?:tag\/[^/]+\/?)?$/;
 ```
 
 and in `defineConfig`: `site`, `output: 'static'`, `trailingSlash: 'ignore'`, the `sitemap({ i18n, serialize })`
-integration exactly as in source lines 23–37, and the `i18n` block (lines 39–45). If the target already
+integration exactly as in the source, and the `i18n` block. If the target already
 uses `@astrojs/sitemap`, merge the `i18n` and `serialize` options into the existing call; do not register it twice.
 
 Why `post-dates.mjs` reads files directly: the config is evaluated before the content layer exists.
@@ -331,8 +331,8 @@ them (or map them to the target's tokens) in the global stylesheet:
 ```
 
 Also copy from `src/styles/global.css`: the `@keyframes rise` + `.rise` rule with its
-`prefers-reduced-motion` guard (lines 27–48; every component uses `class="rise"` with a `--delay`), and the
-whole `.prose` block (lines 50–186), which styles the rendered Markdown. The `.prose` rules must be
+`prefers-reduced-motion` guard (every component uses `class="rise"` with a `--delay`), and the
+whole `.prose` block (every rule starting with `.prose`), which styles the rendered Markdown. The `.prose` rules must be
 global, not scoped: Astro scoping does not reach into `<Content />`.
 
 ### 5.5 i18n copy
@@ -348,11 +348,11 @@ blog: { title, metaTitle, description, empty, backToBlog, published, updated, rs
 ```
 
 (`title`, `p1`–`p3` are only used by `schema.ts` and `llms.ts`; drop them if you rewrote those in §4.3–4.4.)
-French values are in `src/i18n/fr.ts` lines 24–39; reuse them as is.
+French values are the `blog` block of `src/i18n/fr.ts`; reuse them as is.
 
 `LangToggle.astro` takes `current`, `label`, `path` and links to the same `path` in the other locale.
-If the target has its own switcher, remove the `<LangToggle>` line from `BlogPost.astro:25` and
-`BlogIndex.astro:23` and make sure the target's switcher preserves the path.
+If the target has its own switcher, remove the `<LangToggle>` line from `BlogPost.astro` and
+`BlogIndex.astro` and make sure the target's switcher preserves the path.
 
 ### 5.6 `public/_headers`
 

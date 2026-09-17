@@ -1,7 +1,3 @@
-/**
- * llms.txt (https://llmstxt.org): a Markdown index of the site for LLM
- * crawlers and agents, plus llms-full.txt with the full article bodies.
- */
 import { getAbsoluteLocaleUrl } from "astro:i18n";
 import { tagCopy } from "../data/tags";
 import { getCopy, locales, type Locale } from "../i18n";

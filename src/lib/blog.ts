@@ -6,7 +6,6 @@ import { isLive } from "./publish-date.mjs";
 
 export type Post = CollectionEntry<"blog"> & { slug: string; locale: Locale };
 
-/** Drafts and articles scheduled for a later day: shown in `astro dev`, kept out of production builds. */
 const includeUnpublished =
   import.meta.env.DEV || process.env.SHOW_DRAFTS === "1";
 
@@ -22,11 +21,6 @@ function parseId(id: string): { slug: string; locale: Locale } {
 
 let cache: Promise<Post[]> | undefined;
 
-/**
- * Every published article in every language, newest first.
- * Fails the build if an article is missing one of the languages: the site
- * promises a translation for every post, and hreflang must never point to a 404.
- */
 export function getAllPosts(): Promise<Post[]> {
   cache ??= (async () => {
     const entries = await getCollection(
@@ -51,8 +45,6 @@ export function getAllPosts(): Promise<Post[]> {
       );
     }
 
-    // Tag pages are paired across languages by hreflang, so both versions of
-    // an article must be filed under the same tags.
     const tagKey = (p: Post) => [...p.data.tags].sort().join(",");
     const mismatched = [...bySlug.keys()].filter((slug) => {
       const keys = new Set(posts.filter((p) => p.slug === slug).map(tagKey));
@@ -75,7 +67,6 @@ export async function getPosts(locale: Locale): Promise<Post[]> {
   return (await getAllPosts()).filter((p) => p.locale === locale);
 }
 
-/** Locale-relative path of an article, without leading slash (for the i18n URL helpers). */
 export const postPath = (slug: string) => `blog/${slug}/`;
 export const blogPath = "blog/";
 export const tagPath = (tag: TagId) => `blog/tag/${tag}/`;
@@ -87,7 +78,6 @@ export interface TagSummary {
   posts: Post[];
 }
 
-/** Tags that have at least one published article in this locale, in dictionary order. */
 export async function getTags(locale: Locale): Promise<TagSummary[]> {
   const posts = await getPosts(locale);
   return tagIds
@@ -112,16 +102,10 @@ export function wordCount(body: string | undefined): number {
   return body ? body.trim().split(/\s+/).filter(Boolean).length : 0;
 }
 
-/** Reading time in whole minutes, at 200 words per minute, never below 1. */
 export function readingMinutes(body: string | undefined): number {
   return Math.max(1, Math.round(wordCount(body) / 200));
 }
 
-/**
- * Articles to suggest after `post`: same language, ranked by number of shared
- * tags, then by recency. Falls back to the most recent articles so the block
- * is never empty while other articles exist.
- */
 export async function getRelated(post: Post, limit = 3): Promise<Post[]> {
   const others = (await getPosts(post.locale)).filter(
     (p) => p.slug !== post.slug,
@@ -139,7 +123,6 @@ export async function getRelated(post: Post, limit = 3): Promise<Post[]> {
     .map(({ p }) => p);
 }
 
-/** Locale-scoped URL of a file such as `rss.xml` (the i18n helpers add a trailing slash meant for pages). */
 export const fileUrl = (locale: Locale, file: string) =>
   getAbsoluteLocaleUrl(locale, file).replace(/\/$/, "");
 export const filePath = (locale: Locale, file: string) =>

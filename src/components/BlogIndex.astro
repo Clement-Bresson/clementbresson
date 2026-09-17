@@ -16,9 +16,7 @@ import TagList from "./TagList.astro";
 interface Props {
   locale: Locale;
   posts: Post[];
-  /** All tags with published posts (index page) — rendered as the topics row. */
   tags: TagSummary[];
-  /** When set, the page is a tag page: heading and intro come from the tag. */
   tag?: TagSummary;
 }
 

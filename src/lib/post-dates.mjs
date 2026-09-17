@@ -1,5 +1,3 @@
-// Used by astro.config to set per-URL <lastmod> in the sitemap. The config
-// runs before the content layer exists, so this reads frontmatter directly.
 // Config-only: it locates the articles from its own path, which is wrong once bundled.
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -15,7 +13,6 @@ function readDate(file, key) {
   return m ? new Date(m[1].trim()) : undefined;
 }
 
-/** Map of "<lang>/<slug>" -> last modification date, e.g. "fr/hello". Scheduled articles are left out. */
 export function postLastModified() {
   const out = new Map();
   if (!existsSync(root)) return out;
@@ -34,7 +31,6 @@ export function postLastModified() {
   return out;
 }
 
-/** Newest publication/update date across all articles, for list pages. */
 export function latestPostDate() {
   const dates = [...postLastModified().values()];
   return dates.length

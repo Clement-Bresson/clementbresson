@@ -4,8 +4,6 @@ import Base from "../layouts/Base.astro";
 import { getCopy } from "../i18n";
 import { blogPath } from "../lib/blog";
 
-// Served by Cloudflare for any unknown path (`not_found_handling: 404-page`).
-// The path is unknown, so the page is bilingual and not indexable.
 const en = getCopy("en");
 const fr = getCopy("fr");
 ---

@@ -1,17 +1,4 @@
 #!/usr/bin/env node
-/**
- * Deterministic blog article tooling.
- *
- *   node scripts/article.mjs create <spec.json> [--build] [--force]
- *   node scripts/article.mjs check [<slug>]
- *   node scripts/article.mjs tags
- *   node scripts/article.mjs index [--tag <key>]
- *
- * `create` builds src/content/blog/<slug>/ from a JSON spec: copies and
- * normalises images, writes fr.md and en.md with validated frontmatter, and
- * optionally runs the production build. `check` validates existing articles.
- * The spec format is documented in .claude/skills/blog-article/SKILL.md.
- */
 import {
   copyFile,
   mkdir,
@@ -33,11 +20,9 @@ process.stdout.on("error", (e) => {
   if (e.code === "EPIPE") process.exit(0);
 });
 
-// Site-specific values. Everything below derives from these.
 const SITE = "https://clementbresson.com";
 const LOCALES = ["fr", "en"];
-const DEFAULT_LOCALE = "en"; // served without a URL prefix
-/** Sign-off phrases of the platform the drafts come from, which must not reach the blog. */
+const DEFAULT_LOCALE = "en";
 const CALL_TO_ACTION =
   /(n'hésitez pas à me suivre|DM ouverts|MP ouverts|follow me|DMs? are open)/i;
 
@@ -56,7 +41,6 @@ const OWN_SITE_LINK = new RegExp(
   `\\]\\(https?:\\/\\/(www\\.)?${escapeRe(new URL(SITE).host)}`,
 );
 const prefixed = LOCALES.filter((l) => l !== DEFAULT_LOCALE).join("|");
-/** Internal article link in any locale, with or without trailing slash or #anchor. Group 1 is the slug. */
 const ARTICLE_LINK = new RegExp(
   `\\]\\(\\/(?:(?:${prefixed})\\/)?blog\\/([a-z0-9-]+)\\/?(?:#[^)]*)?\\)`,
   "g",
@@ -74,19 +58,16 @@ async function tagIds() {
   return Object.keys(JSON.parse(await readFile(TAGS_FILE, "utf8")));
 }
 
-/** Body without fenced code blocks, so a `# comment` in a snippet is not read as a heading or a link. */
 const prose = (md) =>
   md.replace(/^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm, "");
 
 const count = (text, re) => (text.match(re) ?? []).length;
-/** What both languages of an article must have in the same number. */
 const shape = (body) => ({
   headings: count(prose(body), /^#{2,6} /gm),
   images: count(body, /!\[[^\]]*\]\(/g),
   "code blocks": count(body, /^(`{3,}|~{3,})/gm) / 2,
 });
 
-/** Links to the blog of another language, which must never appear in this locale's body. */
 function foreignLinks(body, locale) {
   const text = prose(body);
   return LOCALES.filter((l) => l !== locale).some((l) =>
@@ -308,7 +289,6 @@ async function create(specPath, flags) {
   if (flags.build) build();
 }
 
-/** Same formatting as a save in the editor, so a new article is not the only unformatted file of the repo. */
 function format(dir) {
   const r = spawnSync(
     "npx",
@@ -332,7 +312,6 @@ async function slugs() {
     .sort();
 }
 
-/** Parsed `{ data, body, raw }` of one language file, `null` when the file is missing. Throws on bad frontmatter. */
 async function load(slug, locale) {
   const file = path.join(BLOG, slug, `${locale}.md`);
   if (!existsSync(file)) return null;
@@ -353,7 +332,6 @@ async function check(slug) {
   const targets = slug ? [slug] : all;
   let problems = 0;
 
-  /** Articles that exist on disk but are not in a production build yet: linking to them is a 404. */
   const notLive = new Map();
   for (const s of all) {
     const a = await load(s, DEFAULT_LOCALE).catch(() => null);
@@ -443,7 +421,6 @@ async function check(slug) {
 
     const [first, ...others] = LOCALES.map((l) => loaded[l]).filter(Boolean);
     if (others.length === LOCALES.length - 1) {
-      // Fields the build, hreflang and the sitemap assume to be identical in every language.
       const same = (f) => others.every((o) => f(o) === f(first));
       if (!same((a) => [...(a.data.tags ?? [])].sort().join()))
         report(
@@ -455,7 +432,6 @@ async function check(slug) {
             `${key} differs between ${LOCALES.map((l) => `${l}.md`).join(" and ")}`,
           );
       }
-      // Legitimate when only one language was revised, or has its own cover or LinkedIn post.
       for (const key of ["updatedDate", "cover", "linkedin"]) {
         if (!same((a) => String(a.data[key] ?? "")))
           warn(`${s}: ${key} differs between languages`);
@@ -483,7 +459,6 @@ async function check(slug) {
   ok(`${targets.length} article(s) valid`);
 }
 
-/** Compact catalogue of existing articles, for choosing link targets without opening every file. */
 async function index(tag) {
   if (tag && !(await tagIds()).includes(tag)) fail(`unknown tag "${tag}"`);
   for (const s of await slugs()) {

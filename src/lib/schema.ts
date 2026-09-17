@@ -1,8 +1,3 @@
-/**
- * schema.org JSON-LD builders. Everything hangs off one Person entity
- * (`#person`) and one WebSite entity (`#website`) so search and AI engines
- * resolve the home page, the blog and every article to the same author.
- */
 import { getAbsoluteLocaleUrl } from "astro:i18n";
 import { sameAs } from "../data/links";
 import { tagCopy, tagIds, type TagId } from "../data/tags";
@@ -178,7 +173,6 @@ export function blogPostingNode(
   };
 }
 
-/** Wraps nodes in a single JSON-LD graph. */
 export function graph(nodes: Node[]): Node {
   return { "@context": "https://schema.org", "@graph": nodes };
 }

@@ -39,6 +39,8 @@ The README has the human-facing version of this recipe. The rules below are what
 
 Prettier with its defaults (`.prettierrc.mjs` only adds the Astro plugin), identical to format-on-save in the editor. `npm run format` formats everything, `npm run format:check` verifies. `article.mjs create` formats the article it writes. Write code in that style (double quotes, 80 columns) rather than reformatting afterwards.
 
+No comments in code unless strictly necessary: keep one only when it prevents a specific mistake the code cannot express (a load-bearing call, an ordering constraint, a magic number) or when it is a functional directive (`// @ts-check`, `@type`). No doc blocks, no section headers, no restating what the code says.
+
 ### Structure and rules
 
 Routes follow Astro's i18n convention: one literal folder per locale (`src/pages/blog/` for the default locale, `src/pages/fr/blog/` for French). Those page files stay thin: they hold `getStaticPaths` and delegate the whole page to `src/components/BlogPostPage.astro` or `BlogListPage.astro`. Change the shared component, never one locale's page.

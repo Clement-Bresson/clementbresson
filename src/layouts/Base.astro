@@ -10,7 +10,6 @@ import "../styles/global.css";
 
 interface Props {
   locale: Locale;
-  /** Locale-relative path of this page, e.g. `blog/my-post/`. Home is ''. */
   path?: string;
   title?: string;
   description?: string;
@@ -22,9 +21,7 @@ interface Props {
     tags?: string[];
     section?: string;
   };
-  /** Extra schema.org nodes merged into the page graph (Person + WebSite are always present). */
   schema?: Record<string, unknown>[];
-  /** For utility pages (404) that must not be indexed. Skips canonical and hreflang too. */
   noindex?: boolean;
 }
 

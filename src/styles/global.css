@@ -24,7 +24,6 @@ a {
   color: var(--color-ink);
 }
 
-/* Arrival animation: a quiet rise-and-fade, staggered per element. */
 @keyframes rise {
   from {
     opacity: 0;
@@ -47,7 +46,6 @@ a {
   }
 }
 
-/* Rendered markdown of blog articles. */
 .prose {
   font: 400 17px/1.7 var(--font-geist);
   color: var(--color-body);
