@@ -16,17 +16,17 @@ A raw text goes in, a pull request with a bilingual article and a preview URL co
 
 ## Secrets
 
-| Secret                         | Needed for                                                                        |
-| ------------------------------ | --------------------------------------------------------------------------------- |
-| `ANTHROPIC_API_KEY`            | `anthropic/*` models (the default)                                                |
-| `OPENAI_API_KEY`               | `openai/*` models, only if you pick one                                           |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | `google/*` models, only if you pick one                                           |
-| `CLOUDFLARE_API_TOKEN`         | Preview upload (already used by the deploy); the token needs Workers Scripts edit |
-| `CLOUDFLARE_ACCOUNT_ID`        | Same                                                                              |
-| `PIPELINE_PAT`                 | Optional, see "Checks on the PR" below                                            |
-| `SLACK_SIGNING_SECRET`         | Slack relay: request signature check                                              |
-| `SLACK_BOT_TOKEN`              | Slack relay and the workflow's "Report to Slack" step                             |
-| `GH_DISPATCH_TOKEN`            | Slack relay: fine-grained token, Contents read/write on this repo                 |
+| Secret                         | Needed for                                                                          |
+| ------------------------------ | ----------------------------------------------------------------------------------- |
+| `ANTHROPIC_API_KEY`            | `anthropic/*` models (the default)                                                  |
+| `OPENAI_API_KEY`               | `openai/*` models, only if you pick one                                             |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | `google/*` models, only if you pick one                                             |
+| `CLOUDFLARE_API_TOKEN`         | Preview upload (already used by the deploy); the token needs Workers Scripts edit   |
+| `CLOUDFLARE_ACCOUNT_ID`        | Same                                                                                |
+| `PIPELINE_PAT`                 | Optional, see "Checks on the PR" below                                              |
+| `SLACK_SIGNING_SECRET`         | Slack relay: request signature check                                                |
+| `SLACK_BOT_TOKEN`              | Slack relay and the workflow's "Report to Slack" step                               |
+| `GH_DISPATCH_TOKEN`            | Slack relay: fine-grained token, Contents and Pull requests read/write on this repo |
 
 ## Trigger from the phone
 
@@ -87,6 +87,7 @@ Slack channel  --event-->  Worker blog-slack-relay  --repository_dispatch-->  bl
 
 - `workers/slack-relay/src/index.ts`: verifies Slack's signature (HMAC, 5-minute window), answers the URL challenge, ignores retries, bots, edits and thread replies, accepts only top-level messages from `SLACK_ALLOWED_USER_ID`, calls `POST /repos/<repo>/dispatches` with `event_type: blog-post`, then posts an acknowledgement in the thread. A first line `model: provider/model` picks the model; the rest is the text.
 - The workflow's last step ("Report to Slack", runs even on failure) posts the PR and preview URLs, or the run link, in the same thread using `SLACK_BOT_TOKEN`.
+- Reply `merge` or `close` in that thread (exact word, from the allowed user) and the Worker merges or closes the PR the bot announced there and deletes its branch, then confirms in the thread. It finds the PR number in its own "PR ready" message (`conversations.replies`), so it only ever acts on PRs it announced. A merge triggers the normal deploy.
 - `deploy.yml` deploys the Worker on every push to `main` (job "Deploy the Slack relay") and uploads its secrets from the GitHub secrets. It skips the deploy, with a note in the summary, until the three secrets exist.
 - Local run: `npm run relay:dev` with a `workers/slack-relay/.dev.vars` file (ignored by git) holding the three secrets; `npm run check:relay` type-checks it.
 
@@ -105,7 +106,7 @@ Slack channel  --event-->  Worker blog-slack-relay  --repository_dispatch-->  bl
 
 1. **Slack app**: [api.slack.com/apps](https://api.slack.com/apps) → Create New App → From a manifest → pick the workspace → paste `workers/slack-relay/slack-manifest.json` with the `request_url` pointing at your Worker URL (`https://blog-slack-relay.<subdomain>.workers.dev/slack/events`; the subdomain is on the Workers overview page of the Cloudflare dashboard). Slack cannot verify that URL before the Worker is deployed, so if it complains, create the app without the `event_subscriptions` block and add the request URL in Event Subscriptions after step 4.
 2. **Secrets from Slack** (app page): _Basic Information → Signing Secret_ → GitHub secret `SLACK_SIGNING_SECRET`. _Install App → Install to Workspace_, then _Bot User OAuth Token_ (`xoxb-…`) → GitHub secret `SLACK_BOT_TOKEN`.
-3. **GitHub token for the Worker**: GitHub → Settings → Developer settings → Fine-grained tokens → New: this repository only, permission _Contents: Read and write_ (what `repository_dispatch` needs), expiry at most a year → GitHub secret `GH_DISPATCH_TOKEN`. Note the expiry date somewhere; the ack message in Slack will say `401` when it lapses.
+3. **GitHub token for the Worker**: GitHub → Settings → Developer settings → Fine-grained tokens → New: this repository only, permissions _Contents: Read and write_ (what `repository_dispatch` needs) and _Pull requests: Read and write_ (for `merge`/`close` from the thread), expiry at most a year → GitHub secret `GH_DISPATCH_TOKEN`. Note the expiry date somewhere; the ack message in Slack will say `401` when it lapses.
 4. **Your Slack member ID**: Slack → your profile → ⋯ → Copy member ID (`U…`) → put it in `vars.SLACK_ALLOWED_USER_ID` of `workers/slack-relay/wrangler.jsonc`, commit, push. The push deploys the Worker.
 5. **Channel**: create `#agent-clementbresson-blog-post` (public or private), and invite the bot: `/invite @clementbresson.com`. If the app was created without event subscriptions, now add the request URL under Event Subscriptions and subscribe the bot to `message.channels` and `message.groups`; save, reinstall if Slack asks.
 6. **Test**: post a short text in `#agent-clementbresson-blog-post`. Within seconds: "Received…" in the thread. Within ~5 minutes: the PR and preview links.

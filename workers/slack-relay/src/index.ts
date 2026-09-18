@@ -43,15 +43,104 @@ export default {
     if (payload.type !== "event_callback") return new Response("ok");
 
     const e = payload.event;
-    const isPost =
-      e.type === "message" && !e.subtype && !e.bot_id && !e.thread_ts;
-    if (!isPost || e.user !== env.SLACK_ALLOWED_USER_ID || !e.text?.trim())
+    const text = e.text?.trim() ?? "";
+    const isMessage = e.type === "message" && !e.subtype && !e.bot_id;
+    if (!isMessage || e.user !== env.SLACK_ALLOWED_USER_ID || !text)
       return new Response("ok");
 
-    ctx.waitUntil(relay(e, env));
+    const command = COMMANDS[text.toLowerCase()];
+    if (!e.thread_ts) ctx.waitUntil(relay(e, env));
+    else if (command) ctx.waitUntil(command(e.channel, e.thread_ts, env));
     return new Response("ok");
   },
 } satisfies ExportedHandler<Env>;
+
+type Command = (channel: string, thread: string, env: Env) => Promise<void>;
+
+const COMMANDS: Record<string, Command> = {
+  merge: (channel, thread, env) => act(channel, thread, env, "merge"),
+  close: (channel, thread, env) => act(channel, thread, env, "close"),
+};
+
+async function act(
+  channel: string,
+  thread: string,
+  env: Env,
+  action: "merge" | "close",
+): Promise<void> {
+  const reply = (text: string) => postMessage(env, channel, thread, text);
+  const number = await announcedPullRequest(env, channel, thread);
+  if (!number) return reply("No pull request announced in this thread yet.");
+
+  const pr = await github(env, `pulls/${number}`);
+  if (!pr.ok) return reply(`GitHub answered ${pr.status} for PR #${number}.`);
+  const { state, merged, head } = (await pr.json()) as {
+    state: string;
+    merged: boolean;
+    head: { ref: string };
+  };
+  if (merged) return reply(`PR #${number} is already merged.`);
+  if (state !== "open") return reply(`PR #${number} is already closed.`);
+
+  const r =
+    action === "merge"
+      ? await github(env, `pulls/${number}/merge`, "PUT", {
+          merge_method: "merge",
+        })
+      : await github(env, `pulls/${number}`, "PATCH", { state: "closed" });
+  if (!r.ok) {
+    const { message } = (await r.json()) as { message?: string };
+    return reply(
+      `Could not ${action} PR #${number}: ${r.status} ${message ?? ""}`,
+    );
+  }
+  await github(env, `git/refs/heads/${head.ref}`, "DELETE");
+  await reply(
+    action === "merge"
+      ? `Merged PR #${number}. The deploy is running; the article is live in a few minutes.`
+      : `Closed PR #${number} and deleted its branch.`,
+  );
+}
+
+async function announcedPullRequest(
+  env: Env,
+  channel: string,
+  thread: string,
+): Promise<number | undefined> {
+  const r = await fetch(
+    `https://slack.com/api/conversations.replies?channel=${channel}&ts=${thread}`,
+    { headers: { authorization: `Bearer ${env.SLACK_BOT_TOKEN}` } },
+  );
+  const { messages = [] } = (await r.json()) as {
+    messages?: { bot_id?: string; text?: string }[];
+  };
+  const repo = env.GITHUB_REPO.replace(/[.]/g, "\\.");
+  const re = new RegExp(`github\\.com/${repo}/pull/(\\d+)`);
+  for (const m of messages) {
+    const found = m.bot_id && m.text?.match(re);
+    if (found) return Number(found[1]);
+  }
+  return undefined;
+}
+
+function github(
+  env: Env,
+  path: string,
+  method = "GET",
+  body?: unknown,
+): Promise<Response> {
+  return fetch(`https://api.github.com/repos/${env.GITHUB_REPO}/${path}`, {
+    method,
+    headers: {
+      authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`,
+      accept: "application/vnd.github+json",
+      "x-github-api-version": "2022-11-28",
+      "user-agent": "blog-slack-relay",
+      ...(body ? { "content-type": "application/json" } : {}),
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+}
 
 async function verify(
   request: Request,
@@ -103,28 +192,15 @@ function parseMessage(raw: string): { text: string; model: string } {
 
 async function relay(e: SlackMessage, env: Env): Promise<void> {
   const { text, model } = parseMessage(e.text ?? "");
-  const r = await fetch(
-    `https://api.github.com/repos/${env.GITHUB_REPO}/dispatches`,
-    {
-      method: "POST",
-      headers: {
-        authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`,
-        accept: "application/vnd.github+json",
-        "x-github-api-version": "2022-11-28",
-        "user-agent": "blog-slack-relay",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        event_type: "blog-post",
-        client_payload: {
-          text,
-          model,
-          slack_channel: e.channel,
-          slack_thread_ts: e.ts,
-        },
-      }),
+  const r = await github(env, "dispatches", "POST", {
+    event_type: "blog-post",
+    client_payload: {
+      text,
+      model,
+      slack_channel: e.channel,
+      slack_thread_ts: e.ts,
     },
-  );
+  });
   const runs = `https://github.com/${env.GITHUB_REPO}/actions/workflows/blog-post.yml`;
   const message = r.ok
     ? `Received. Writing the article with ${model}; the PR link will follow here. Runs: ${runs}`
