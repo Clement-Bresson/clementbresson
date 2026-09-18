@@ -36,6 +36,32 @@ jobs:
           path: dist
           retention-days: 1
 
+  preview:
+    name: Preview
+    needs: build
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v5
+        with:
+          name: dist
+          path: dist
+      - uses: ./.github/actions/preview
+        with:
+          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          github-token: ${{ github.token }}
+          pr-number: ${{ github.event.pull_request.number }}
+
   deploy:
     name: Deploy to Cloudflare
     needs: build

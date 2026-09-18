@@ -14,8 +14,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "deploy": "astro build && wrangler deploy",
-    "article": "node scripts/article.mjs",
-    "article:check": "node scripts/article.mjs check"
+    "article": "node scripts/article.ts",
+    "article:check": "node scripts/article.ts check"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@types/js-yaml": "^4.0.9",
     "prettier": "^3.9.7",
     "prettier-plugin-astro": "^1.0.1",
     "typescript": "^6.0.3",

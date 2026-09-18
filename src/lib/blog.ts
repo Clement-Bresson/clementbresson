@@ -2,7 +2,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { getAbsoluteLocaleUrl, getRelativeLocaleUrl } from "astro:i18n";
 import { tagCopy, tagIds, type TagId } from "../data/tags";
 import { locales, type Locale } from "../i18n";
-import { isLive } from "./publish-date.mjs";
+import { isLive } from "./publish-date.ts";
 
 export type Post = CollectionEntry<"blog"> & { slug: string; locale: Locale };
 

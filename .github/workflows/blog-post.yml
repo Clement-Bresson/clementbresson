@@ -1,0 +1,150 @@
+name: Blog post
+
+on:
+  workflow_dispatch:
+    inputs:
+      text:
+        description: The raw text of the post (French or English)
+        required: true
+        type: string
+      model:
+        description: Model, as provider/model on models.dev (its key must be a repo secret)
+        type: choice
+        default: anthropic/claude-sonnet-5
+        options:
+          - anthropic/claude-sonnet-5
+          - anthropic/claude-opus-5
+          - openai/gpt-5.6
+          - google/gemini-3.5-flash
+      title_hint:
+        description: Optional title or angle
+        required: false
+        type: string
+  repository_dispatch:
+    types: [blog-post]
+
+concurrency:
+  group: blog-post
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  write:
+    name: Write the article
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      pr_url: ${{ steps.pr.outputs.url }}
+      preview_url: ${{ steps.preview.outputs.url }}
+      slack_channel: ${{ github.event.client_payload.slack_channel }}
+      slack_thread_ts: ${{ github.event.client_payload.slack_thread_ts }}
+    env:
+      TOKEN: ${{ secrets.PIPELINE_PAT || github.token }}
+      MODEL: ${{ github.event_name == 'workflow_dispatch' && inputs.model || github.event.client_payload.model || 'anthropic/claude-sonnet-5' }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.PIPELINE_PAT || github.token }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm install -g opencode-ai
+
+      - name: Prepare the input
+        env:
+          TEXT: ${{ github.event_name == 'workflow_dispatch' && inputs.text || github.event.client_payload.text }}
+        run: |
+          if [ -z "$TEXT" ]; then
+            echo "::error::no text was given"
+            exit 1
+          fi
+          mkdir -p .pipeline
+          printf '%s\n' "$TEXT" > .pipeline/input.md
+          echo "Model: $MODEL" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Run the writer
+        timeout-minutes: 12
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+          TITLE_HINT: ${{ github.event_name == 'workflow_dispatch' && inputs.title_hint || github.event.client_payload.title_hint }}
+        run: |
+          prompt="The source text is in .pipeline/input.md. Write the article."
+          if [ -n "$TITLE_HINT" ]; then
+            prompt="$prompt Title hint from the author: $TITLE_HINT"
+          fi
+          opencode run --agent blog-writer --model "$MODEL" --auto "$prompt" < /dev/null
+
+      - name: Find the new article
+        id: article
+        run: |
+          new=$(git status --porcelain -- src/content/blog | sed -n 's#^?? src/content/blog/\([^/]*\)/$#\1#p')
+          count=$(printf '%s\n' "$new" | grep -c . || true)
+          if [ "$count" -ne 1 ]; then
+            echo "::error::expected exactly one new article folder, found $count"
+            git status --porcelain
+            exit 1
+          fi
+          outside=$(git status --porcelain | grep -v '^.. src/content/blog/' || true)
+          if [ -n "$outside" ]; then
+            echo "::error::the agent changed files outside src/content/blog"
+            echo "$outside"
+            exit 1
+          fi
+          echo "slug=$new" >> "$GITHUB_OUTPUT"
+
+      - run: npm run article:check
+      - run: npm run build
+
+      - name: Write the PR body
+        env:
+          SLUG: ${{ steps.article.outputs.slug }}
+        run: node .github/scripts/pr-body.ts "$SLUG" > .pipeline/pr-body.md
+
+      - name: Commit and push
+        id: push
+        env:
+          SLUG: ${{ steps.article.outputs.slug }}
+        run: |
+          branch="post/$SLUG"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            branch="$branch-$GITHUB_RUN_NUMBER"
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add src/content/blog
+          git commit -m "post: $SLUG"
+          git push -u origin "$branch"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
+      - name: Open the pull request
+        id: pr
+        env:
+          GH_TOKEN: ${{ env.TOKEN }}
+          SLUG: ${{ steps.article.outputs.slug }}
+          BRANCH: ${{ steps.push.outputs.branch }}
+        run: |
+          url=$(gh pr create --base main --head "$BRANCH" --title "post: $SLUG" --body-file .pipeline/pr-body.md)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "number=${url##*/}" >> "$GITHUB_OUTPUT"
+          {
+            echo "PR: $url"
+            echo
+            cat .pipeline/pr-body.md
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Preview
+        id: preview
+        uses: ./.github/actions/preview
+        with:
+          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          github-token: ${{ env.TOKEN }}
+          pr-number: ${{ steps.pr.outputs.number }}

@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node scripts/article.mjs *)",
+      "Bash(node scripts/article.ts *)",
       "Bash(npm run article *)",
       "Bash(npm run article:check)",
       "Bash(npm run build)"

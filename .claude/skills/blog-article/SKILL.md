@@ -1,13 +1,13 @@
 ---
 name: blog-article
-description: Turn raw text (any language) and images into a published bilingual blog article. Use when the user gives article content, a LinkedIn post, or says "new article", "publie cet article", "add this to the blog". The model translates and fills judgment fields; scripts/article.mjs does everything mechanical.
+description: Turn raw text (any language) and images into a published bilingual blog article. Use when the user gives article content, a LinkedIn post, or says "new article", "publie cet article", "add this to the blog". The model translates and fills judgment fields; scripts/article.ts does everything mechanical.
 ---
 
 # Blog article
 
 The blog needs every article in French AND English, in `src/content/blog/<slug>/`. Your job is
 translation plus a few judgment fields. Everything else (folder, images, frontmatter, validation,
-build) is done by the deterministic script `scripts/article.mjs`. Never write the article files by hand.
+build) is done by the deterministic script `scripts/article.ts`. Never write the article files by hand.
 
 ## Inputs to collect from the user
 
@@ -19,7 +19,7 @@ Do not ask for slug, description or tags: propose them.
 
 ## Steps
 
-1. `node scripts/article.mjs tags` to see the tag vocabulary. Pick 1–2 tags. If none fits, add one to
+1. `node scripts/article.ts tags` to see the tag vocabulary. Pick 1–2 tags. If none fits, add one to
    `src/data/tags.json` (key + EN/FR label and description) before continuing.
 2. Prepare the source language version:
    - Keep the author's voice, first person, and tu/vous choice. Fix typos and accents. Do not add facts.
@@ -40,11 +40,11 @@ Do not ask for slug, description or tags: propose them.
    (120–160 chars, one real sentence: meta description and excerpt), `coverAlt` if there is a cover.
    Slug: lowercase kebab-case, English, stable forever.
 5. In the scratchpad (not the project), write `fr.body.md`, `en.body.md` and `spec.json`, then run:
-   `node scripts/article.mjs create <spec.json> --build`
+   `node scripts/article.ts create <spec.json> --build`
    Fix anything it reports and re-run with `--force`. Bodies go in files, not in the JSON: plain
    Markdown needs no escaping, which matters for code samples with quotes and backslashes.
 6. Inbound links (see "Cross-linking"): edit the existing articles that should point to the new one,
-   then `node scripts/article.mjs check` and `npm run build`. Show the two URLs printed in step 5 and
+   then `node scripts/article.ts check` and `npm run build`. Show the two URLs printed in step 5 and
    list the articles you linked from.
 7. Do not commit unless asked. When asked, commit the new `src/content/blog/<slug>/` folder, the existing
    articles you edited for inbound links, and `src/data/tags.json` if a tag was added. Then push; the
@@ -54,7 +54,7 @@ Do not ask for slug, description or tags: propose them.
 
 Every article should be woven into the existing ones. Do this on every new article:
 
-1. `node scripts/article.mjs index` prints every existing article with slug, tags, titles, descriptions
+1. `node scripts/article.ts index` prints every existing article with slug, tags, titles, descriptions
    and section headings (`index --tag <key>` narrows it to one topic once the blog is large). Read it
    fully; open an article file only when you need to check wording.
 2. Outbound: in the new article, link the first natural mention of any concept another article covers
@@ -120,6 +120,6 @@ must be one of the copied images.
 ## Updating an existing article
 
 Edit `src/content/blog/<slug>/{fr,en}.md` directly, set `updatedDate` in both, keep both languages in
-sync, then run `node scripts/article.mjs check <slug>` and `npm run build`. `check` fails when `pubDate`,
+sync, then run `node scripts/article.ts check <slug>` and `npm run build`. `check` fails when `pubDate`,
 tags or the draft flag differ between the two files, and warns when `updatedDate`, cover, headings,
 images, code blocks or link targets do.

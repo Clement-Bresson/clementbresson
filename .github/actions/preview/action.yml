@@ -1,0 +1,47 @@
+name: Preview
+description: Uploads dist as a Worker version and posts its preview URL on the pull request
+
+inputs:
+  cloudflare-api-token:
+    required: true
+  cloudflare-account-id:
+    required: true
+  github-token:
+    required: true
+  pr-number:
+    required: true
+
+outputs:
+  url:
+    value: ${{ steps.upload.outputs.deployment-url }}
+
+runs:
+  using: composite
+  steps:
+    - id: upload
+      uses: cloudflare/wrangler-action@v4
+      with:
+        apiToken: ${{ inputs.cloudflare-api-token }}
+        accountId: ${{ inputs.cloudflare-account-id }}
+        command: versions upload --preview-alias pr-${{ inputs.pr-number }} --message "PR #${{ inputs.pr-number }}"
+
+    - shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        URL: ${{ steps.upload.outputs.deployment-url }}
+        PR: ${{ inputs.pr-number }}
+      run: |
+        if [ -z "$URL" ]; then
+          echo "::error::wrangler versions upload returned no preview URL (is preview_urls enabled in wrangler.jsonc?)"
+          exit 1
+        fi
+        marker="<!-- preview-url -->"
+        body="$marker"$'\n'"**Preview**: $URL"$'\n\n'"Worker version of this pull request, rebuilt on every push. Not deployed to production."
+        id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+          --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n1)
+        if [ -n "$id" ]; then
+          gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -f body="$body" >/dev/null
+        else
+          gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -f body="$body" >/dev/null
+        fi
+        echo "Preview: $URL" >> "$GITHUB_STEP_SUMMARY"

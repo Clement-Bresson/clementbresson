@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # wrangler local state
 .wrangler/
+
+# blog-post pipeline work files
+.pipeline/

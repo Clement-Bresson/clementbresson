@@ -1,7 +1,6 @@
-// @ts-check
 import { defineConfig, fontProviders } from "astro/config";
 import sitemap from "@astrojs/sitemap";
-import { latestPostDate, postLastModified } from "./src/lib/post-dates.mjs";
+import { latestPostDate, postLastModified } from "./src/lib/post-dates.ts";
 
 const site = process.env.SITE_URL ?? "https://clementbresson.com";
 

@@ -14,15 +14,15 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
 import sharp from "sharp";
-import { isLive, today } from "../src/lib/publish-date.mjs";
+import { isLive, today } from "../src/lib/publish-date.ts";
 
-process.stdout.on("error", (e) => {
+process.stdout.on("error", (e: NodeJS.ErrnoException) => {
   if (e.code === "EPIPE") process.exit(0);
 });
 
 const SITE = "https://clementbresson.com";
-const LOCALES = ["fr", "en"];
-const DEFAULT_LOCALE = "en";
+const LOCALES = ["fr", "en"] as const;
+const DEFAULT_LOCALE: Locale = "en";
 const CALL_TO_ACTION =
   /(n'hésitez pas à me suivre|DM ouverts|MP ouverts|follow me|DMs? are open)/i;
 
@@ -34,16 +34,62 @@ const IMAGE_EXT = /\.(jpe?g|png|webp|avif|gif|svg)$/i;
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 
-function isDay(value) {
+type Locale = (typeof LOCALES)[number];
+
+type Source = { title: string; author?: string; year?: number; url?: string };
+
+type LocaleSpec = {
+  title: string;
+  description: string;
+  coverAlt?: string;
+  body?: string;
+  bodyFile?: string;
+};
+
+type Spec = Record<Locale, LocaleSpec> & {
+  slug: string;
+  pubDate: string;
+  updatedDate?: string;
+  tags: string[];
+  cover?: string;
+  images?: { from: string; as?: string }[];
+  linkedin?: string;
+  sources?: Source[];
+  draft?: boolean;
+};
+
+type Frontmatter = {
+  title?: string;
+  description?: string;
+  pubDate?: string;
+  updatedDate?: string;
+  cover?: string;
+  coverAlt?: string;
+  tags?: string[];
+  linkedin?: string;
+  sources?: Source[];
+  draft?: boolean;
+};
+
+type Article = {
+  data: Frontmatter;
+  body: string;
+  raw: string;
+  links?: string[];
+};
+
+type Flags = { build: boolean; force: boolean };
+
+function isDay(value: unknown): boolean {
   const s = String(value ?? "");
   if (!DAY.test(s)) return false;
   const d = new Date(`${s}T00:00:00Z`);
   return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s;
 }
 
-const blogPrefix = (locale) =>
+const blogPrefix = (locale: Locale) =>
   locale === DEFAULT_LOCALE ? "/blog/" : `/${locale}/blog/`;
-const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const OWN_SITE_LINK = new RegExp(
   `\\]\\(https?:\\/\\/(www\\.)?${escapeRe(new URL(SITE).host)}`,
 );
@@ -54,37 +100,37 @@ const ARTICLE_LINK = new RegExp(
 );
 const IMAGE_REF = /!\[[^\]]*\]\(\.\/([^)\s]+)\)/g;
 
-const fail = (msg) => {
+const fail = (msg: string): never => {
   console.error(`✗ ${msg}`);
   process.exit(1);
 };
-const warn = (msg) => console.warn(`! ${msg}`);
-const ok = (msg) => console.log(`✓ ${msg}`);
+const warn = (msg: string) => console.warn(`! ${msg}`);
+const ok = (msg: string) => console.log(`✓ ${msg}`);
 
-async function tagIds() {
+async function tagIds(): Promise<string[]> {
   return Object.keys(JSON.parse(await readFile(TAGS_FILE, "utf8")));
 }
 
-const prose = (md) =>
+const prose = (md: string) =>
   md.replace(/^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm, "");
 
-const count = (text, re) => (text.match(re) ?? []).length;
-const shape = (body) => ({
+const count = (text: string, re: RegExp) => (text.match(re) ?? []).length;
+const shape = (body: string): Record<string, number> => ({
   headings: count(prose(body), /^#{2,6} /gm),
   images: count(body, /!\[[^\]]*\]\(/g),
   "code blocks": count(body, /^(`{3,}|~{3,})/gm) / 2,
 });
 
-function foreignLinks(body, locale) {
+function foreignLinks(body: string, locale: Locale): boolean {
   const text = prose(body);
   return LOCALES.filter((l) => l !== locale).some((l) =>
     text.includes(`](${blogPrefix(l)}`),
   );
 }
 
-const yamlString = (s) => JSON.stringify(String(s));
+const yamlString = (s: unknown) => JSON.stringify(String(s));
 
-function frontmatter(spec, locale) {
+function frontmatter(spec: Spec, locale: Locale): string {
   const l = spec[locale];
   const lines = [
     "---",
@@ -112,8 +158,8 @@ function frontmatter(spec, locale) {
   return lines.join("\n");
 }
 
-function validateSpec(spec, knownTags) {
-  const errors = [];
+function validateSpec(spec: Spec, knownTags: string[]): string[] {
+  const errors: string[] = [];
   if (!SLUG.test(spec.slug ?? ""))
     errors.push("slug must be lowercase kebab-case");
   if (!isDay(spec.pubDate))
@@ -187,7 +233,9 @@ function validateSpec(spec, knownTags) {
     if (spec.cover && !l.coverAlt)
       warn(`${locale}.coverAlt missing (alt text for the cover)`);
   }
-  const bodies = LOCALES.map((l) => spec[l]?.body).filter(Boolean);
+  const bodies = LOCALES.map((l) => spec[l]?.body).filter((b): b is string =>
+    Boolean(b),
+  );
   if (bodies.length === LOCALES.length) {
     const [first, ...others] = bodies.map(shape);
     for (const name of Object.keys(first)) {
@@ -198,9 +246,10 @@ function validateSpec(spec, knownTags) {
   return errors;
 }
 
-const extKind = (f) => path.extname(f).toLowerCase().replace(".jpeg", ".jpg");
+const extKind = (f: string) =>
+  path.extname(f).toLowerCase().replace(".jpeg", ".jpg");
 
-async function normaliseImage(from, to) {
+async function normaliseImage(from: string, to: string): Promise<void> {
   if (/\.(svg|gif)$/i.test(from)) return copyFile(from, to);
   const meta = await sharp(from).metadata();
   // EXIF orientations 5–8 are stored rotated by 90°: the displayed width is the stored height.
@@ -214,8 +263,8 @@ async function normaliseImage(from, to) {
   ok(`${path.basename(to)}: resized ${width}px → ${MAX_IMAGE_WIDTH}px`);
 }
 
-async function create(specPath, flags) {
-  const spec = JSON.parse(await readFile(specPath, "utf8"));
+async function create(specPath: string, flags: Flags): Promise<void> {
+  const spec: Spec = JSON.parse(await readFile(specPath, "utf8"));
   const specDir = path.dirname(path.resolve(specPath));
   spec.pubDate ??= today();
   for (const locale of LOCALES) {
@@ -249,7 +298,7 @@ async function create(specPath, flags) {
   if (spec.cover && !placed.has(spec.cover))
     fail(`cover "${spec.cover}" is not among the copied images`);
   for (const locale of LOCALES) {
-    for (const m of spec[locale].body.matchAll(IMAGE_REF)) {
+    for (const m of (spec[locale].body ?? "").matchAll(IMAGE_REF)) {
       if (!placed.has(m[1]))
         fail(
           `${locale}.body references ./${m[1]} but no such image was provided`,
@@ -272,7 +321,10 @@ async function create(specPath, flags) {
   for (const locale of LOCALES) {
     await writeFile(
       path.join(dir, `${locale}.md`),
-      frontmatter(spec, locale) + "\n" + spec[locale].body.trim() + "\n",
+      frontmatter(spec, locale) +
+        "\n" +
+        (spec[locale].body ?? "").trim() +
+        "\n",
     );
   }
   format(dir);
@@ -296,7 +348,7 @@ async function create(specPath, flags) {
   if (flags.build) build();
 }
 
-function format(dir) {
+function format(dir: string): void {
   const r = spawnSync(
     "npx",
     ["prettier", "--write", "--log-level", "warn", dir],
@@ -305,21 +357,21 @@ function format(dir) {
   if (r.status !== 0) warn("prettier failed: run `npm run format`");
 }
 
-function build() {
+function build(): void {
   console.log("→ astro build");
   const r = spawnSync("npm", ["run", "build"], { cwd: ROOT, stdio: "inherit" });
   if (r.status !== 0) fail("build failed");
   ok("build passed");
 }
 
-async function slugs() {
+async function slugs(): Promise<string[]> {
   return (await readdir(BLOG, { withFileTypes: true }))
     .filter((d) => d.isDirectory())
     .map((d) => d.name)
     .sort();
 }
 
-async function load(slug, locale) {
+async function load(slug: string, locale: Locale): Promise<Article | null> {
   const file = path.join(BLOG, slug, `${locale}.md`);
   if (!existsSync(file)) return null;
   const raw = (await readFile(file, "utf8")).replace(/\r\n/g, "\n");
@@ -327,19 +379,19 @@ async function load(slug, locale) {
   if (!m) throw new Error("no frontmatter");
   // JSON_SCHEMA keeps dates as the YYYY-MM-DD strings they were written as.
   return {
-    data: yaml.load(m[1], { schema: yaml.JSON_SCHEMA }) ?? {},
+    data: (yaml.load(m[1], { schema: yaml.JSON_SCHEMA }) as Frontmatter) ?? {},
     body: m[2],
     raw,
   };
 }
 
-async function check(slug) {
+async function check(slug?: string): Promise<void> {
   const known = await tagIds();
   const all = await slugs();
   const targets = slug ? [slug] : all;
   let problems = 0;
 
-  const notLive = new Map();
+  const notLive = new Map<string, string>();
   for (const s of all) {
     const a = await load(s, DEFAULT_LOCALE).catch(() => null);
     if (a?.data.draft) notLive.set(s, "a draft");
@@ -349,7 +401,7 @@ async function check(slug) {
 
   for (const s of targets) {
     const dir = path.join(BLOG, s);
-    const report = (m) => {
+    const report = (m: string) => {
       problems++;
       console.error(`✗ ${s}: ${m}`);
     };
@@ -361,13 +413,14 @@ async function check(slug) {
     if (notLive.has(s))
       console.log(`· ${s}: ${notLive.get(s)}, not in production builds`);
 
-    const loaded = {};
+    const loaded: Partial<Record<Locale, Article>> = {};
     for (const locale of LOCALES) {
-      let article;
+      let article: Article | null;
       try {
         article = await load(s, locale);
       } catch (e) {
-        report(`${locale}.md: ${e.message.split("\n")[0]}`);
+        const message = e instanceof Error ? e.message : String(e);
+        report(`${locale}.md: ${message.split("\n")[0]}`);
         continue;
       }
       if (!article) {
@@ -378,9 +431,10 @@ async function check(slug) {
       const { data, body } = article;
       const text = prose(body);
 
-      if (!String(data.title ?? "").trim()) report(`${locale}.md has no title`);
-      else if (data.title.length > 65)
-        warn(`${s}/${locale}.md title is ${data.title.length} chars`);
+      const title = String(data.title ?? "");
+      if (!title.trim()) report(`${locale}.md has no title`);
+      else if (title.length > 65)
+        warn(`${s}/${locale}.md title is ${title.length} chars`);
       const desc = String(data.description ?? "");
       if (desc.length < 120 || desc.length > 160)
         warn(`${s}/${locale}.md description is ${desc.length} chars`);
@@ -431,20 +485,23 @@ async function check(slug) {
       }
     }
 
-    const [first, ...others] = LOCALES.map((l) => loaded[l]).filter(Boolean);
+    const [first, ...others] = LOCALES.map((l) => loaded[l]).filter(
+      (a): a is Article => Boolean(a),
+    );
     if (others.length === LOCALES.length - 1) {
-      const same = (f) => others.every((o) => f(o) === f(first));
+      const same = (f: (a: Article) => unknown) =>
+        others.every((o) => f(o) === f(first));
       if (!same((a) => [...(a.data.tags ?? [])].sort().join()))
         report(
           `tags differ between ${LOCALES.map((l) => `${l}.md`).join(" and ")}`,
         );
-      for (const key of ["pubDate", "draft"]) {
+      for (const key of ["pubDate", "draft"] as const) {
         if (!same((a) => String(a.data[key] ?? "")))
           report(
             `${key} differs between ${LOCALES.map((l) => `${l}.md`).join(" and ")}`,
           );
       }
-      for (const key of ["updatedDate", "cover", "linkedin"]) {
+      for (const key of ["updatedDate", "cover", "linkedin"] as const) {
         if (!same((a) => String(a.data[key] ?? "")))
           warn(`${s}: ${key} differs between languages`);
       }
@@ -472,10 +529,10 @@ async function check(slug) {
   ok(`${targets.length} article(s) valid`);
 }
 
-async function index(tag) {
+async function index(tag?: string): Promise<void> {
   if (tag && !(await tagIds()).includes(tag)) fail(`unknown tag "${tag}"`);
   for (const s of await slugs()) {
-    const articles = {};
+    const articles: Partial<Record<Locale, Article | null>> = {};
     for (const locale of LOCALES)
       articles[locale] = await load(s, locale).catch(() => null);
     const any = Object.values(articles).find(Boolean);
@@ -489,9 +546,10 @@ async function index(tag) {
       `## ${s}  (${any.data.pubDate}${state}, tags ${(any.data.tags ?? []).join(", ")})`,
     );
     for (const locale of LOCALES) {
-      if (articles[locale])
+      const a = articles[locale];
+      if (a)
         console.log(
-          `  ${locale.toUpperCase()} ${articles[locale].data.title}\n     ${articles[locale].data.description}`,
+          `  ${locale.toUpperCase()} ${a.data.title}\n     ${a.data.description}`,
         );
     }
     const headings = [...prose(any.body).matchAll(/^## (.+)$/gm)]
@@ -502,12 +560,12 @@ async function index(tag) {
 }
 
 const [cmd, ...args] = process.argv.slice(2);
-const valueOf = (name) =>
+const valueOf = (name: string) =>
   args.includes(name) ? args[args.indexOf(name) + 1] : undefined;
 const positional = args.filter(
   (a, i) => !a.startsWith("--") && args[i - 1] !== "--tag",
 );
-const flags = {
+const flags: Flags = {
   build: args.includes("--build"),
   force: args.includes("--force"),
 };
@@ -517,7 +575,7 @@ else if (cmd === "tags") console.log((await tagIds()).join("\n"));
 else if (cmd === "index") await index(valueOf("--tag"));
 else {
   console.log(
-    "usage:\n  node scripts/article.mjs create <spec.json> [--build] [--force]\n  node scripts/article.mjs check [<slug>]\n  node scripts/article.mjs tags\n  node scripts/article.mjs index [--tag <key>]",
+    "usage:\n  node scripts/article.ts create <spec.json> [--build] [--force]\n  node scripts/article.ts check [<slug>]\n  node scripts/article.ts tags\n  node scripts/article.ts index [--tag <key>]",
   );
   process.exit(cmd ? 1 : 0);
 }

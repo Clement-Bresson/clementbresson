@@ -2,22 +2,22 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { isLive } from "./publish-date.mjs";
+import { isLive } from "./publish-date.ts";
 
 const root = fileURLToPath(new URL("../content/blog/", import.meta.url));
 
-function readFrontmatter(file) {
+function readFrontmatter(file: string): string {
   const m = readFileSync(file, "utf8").match(/^---\r?\n([\s\S]*?)\r?\n---/);
   return m ? m[1] : "";
 }
 
-function readDate(frontmatter, key) {
+function readDate(frontmatter: string, key: string): Date | undefined {
   const m = frontmatter.match(new RegExp(`^${key}:\\s*['"]?([^'"\\n]+)`, "m"));
   return m ? new Date(m[1].trim()) : undefined;
 }
 
-export function postLastModified() {
-  const out = new Map();
+export function postLastModified(): Map<string, Date> {
+  const out = new Map<string, Date>();
   if (!existsSync(root)) return out;
   for (const slug of readdirSync(root, { withFileTypes: true })) {
     if (!slug.isDirectory()) continue;
@@ -36,7 +36,7 @@ export function postLastModified() {
   return out;
 }
 
-export function latestPostDate() {
+export function latestPostDate(): Date | undefined {
   const dates = [...postLastModified().values()];
   return dates.length
     ? new Date(Math.max(...dates.map((d) => d.getTime())))

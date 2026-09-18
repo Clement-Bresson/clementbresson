@@ -53,7 +53,7 @@ Review the output, then commit and push. The deploy is automatic.
 
 ### The manual way: the script
 
-`scripts/article.mjs` is deterministic and does not use any AI.
+`scripts/article.ts` is deterministic and does not use any AI.
 
 | Command                                    | What it does                                                                                                                                                           |
 | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -87,6 +87,10 @@ Minimal spec:
 
 `bodyFile` is a Markdown file next to the spec (an inline `"body"` string works too). Optional fields: `pubDate` (`YYYY-MM-DD`, defaults to today), `updatedDate`, `linkedin` (URL of the original post, shown as attribution), `sources` (list of `{ title, author?, year?, url? }`, rendered as a Sources section), `draft`. Full format in the skill file.
 
+### From the phone: the `blog-post` workflow
+
+GitHub app → Actions → "Blog post" → Run workflow, paste the text. An OpenCode agent runs the recipe above unattended, validates, and opens a pull request on `post/<slug>` with a preview URL. Details, secrets and limits in [`docs/blog-pipeline.md`](docs/blog-pipeline.md).
+
 ### Rules worth knowing
 
 - Frontmatter `tags` must be keys of `src/data/tags.json`, identical in both languages. To add a topic, add it there first with an EN and FR label and description. A tag page appears once an article uses it.
@@ -99,7 +103,7 @@ Minimal spec:
 
 ## Deploy (Cloudflare Workers, via GitHub Actions)
 
-Every push to `main`, and a daily schedule (for scheduled articles), runs `.github/workflows/deploy.yml`: it validates the articles, builds the site, then deploys `dist/` as a Cloudflare Worker with static assets using `wrangler.jsonc`. Pull requests only run the build.
+Every push to `main`, and a daily schedule (for scheduled articles), runs `.github/workflows/deploy.yml`: it validates the articles, builds the site, then deploys `dist/` as a Cloudflare Worker with static assets using `wrangler.jsonc`. Pull requests run the build and upload a Worker version whose preview URL is posted as a comment (`preview_urls` in `wrangler.jsonc`); nothing is deployed until the merge.
 
 One-time setup:
 
