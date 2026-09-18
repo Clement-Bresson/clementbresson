@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # blog-post pipeline work files
 .pipeline/
+
+# wrangler local secrets
+.dev.vars

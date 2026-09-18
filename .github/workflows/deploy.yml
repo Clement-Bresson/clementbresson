@@ -64,6 +64,40 @@ jobs:
           github-token: ${{ github.token }}
           pr-number: ${{ github.event.pull_request.number }}
 
+  deploy-relay:
+    name: Deploy the Slack relay
+    if: github.event_name != 'pull_request' && github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run check:relay
+      - id: secrets
+        env:
+          CONFIGURED: ${{ secrets.SLACK_SIGNING_SECRET != '' && secrets.SLACK_BOT_TOKEN != '' && secrets.GH_DISPATCH_TOKEN != '' }}
+        run: echo "configured=$CONFIGURED" >> "$GITHUB_OUTPUT"
+      - if: steps.secrets.outputs.configured == 'true'
+        uses: cloudflare/wrangler-action@v4
+        env:
+          SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          GH_DISPATCH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: workers/slack-relay
+          command: deploy
+          secrets: |
+            SLACK_SIGNING_SECRET
+            SLACK_BOT_TOKEN
+            GH_DISPATCH_TOKEN
+      - if: steps.secrets.outputs.configured != 'true'
+        run: echo "Slack relay not deployed - add SLACK_SIGNING_SECRET, SLACK_BOT_TOKEN and GH_DISPATCH_TOKEN" >> "$GITHUB_STEP_SUMMARY"
+
   deploy:
     name: Deploy to Cloudflare
     needs: build

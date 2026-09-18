@@ -11,9 +11,11 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
+    "check:relay": "tsc -p workers/slack-relay",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "deploy": "astro build && wrangler deploy",
+    "relay:dev": "wrangler dev --config workers/slack-relay/wrangler.jsonc",
     "article": "node scripts/article.ts",
     "article:check": "node scripts/article.ts check"
   },
@@ -31,6 +33,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@cloudflare/workers-types": "^5.20260918.1",
     "@types/js-yaml": "^4.0.9",
     "prettier": "^3.9.7",
     "prettier-plugin-astro": "^1.0.1",

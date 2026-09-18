@@ -89,7 +89,7 @@ Minimal spec:
 
 ### From the phone: the `blog-post` workflow
 
-GitHub app → Actions → "Blog post" → Run workflow, paste the text. An OpenCode agent runs the recipe above unattended, validates, and opens a pull request on `post/<slug>` with a preview URL. Details, secrets and limits in [`docs/blog-pipeline.md`](docs/blog-pipeline.md).
+GitHub app → Actions → "Blog post" → Run workflow, paste the text — or post the text in the Slack channel wired to `workers/slack-relay`. An OpenCode agent runs the recipe above unattended, validates, and opens a pull request on `post/<slug>` with a preview URL. Details, secrets and limits in [`docs/blog-pipeline.md`](docs/blog-pipeline.md).
 
 ### Rules worth knowing
 

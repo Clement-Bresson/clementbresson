@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "blog-slack-relay",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "vars": {
+    "GITHUB_REPO": "Clement-Bresson/clementbresson",
+    "SLACK_ALLOWED_USER_ID": "REPLACE_WITH_YOUR_SLACK_MEMBER_ID",
+  },
+  "observability": {
+    "enabled": true,
+  },
+}

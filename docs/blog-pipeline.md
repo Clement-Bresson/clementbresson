@@ -1,6 +1,6 @@
 # Blog pipeline: from a text to a pull request
 
-Step 1 of the phone-to-blog pipeline. A raw text goes in, a pull request with a bilingual article and a preview URL comes out. Steps 2 (Slack → Cloudflare Worker → `repository_dispatch`) and 3 (Slack app) build on this and are not in the repo yet.
+A raw text goes in, a pull request with a bilingual article and a preview URL comes out. Two entry points: the GitHub Actions form (step 1) and a Slack channel through the `blog-slack-relay` Worker (steps 2 and 3, see "Slack" below).
 
 ## Pieces
 
@@ -12,6 +12,7 @@ Step 1 of the phone-to-blog pipeline. A raw text goes in, a pull request with a 
 | `AGENTS.md`, "Headless runs"      | The rules specific to unattended runs (scope, no invented facts, TODO markers, no commit)                                                                              |
 | `.github/scripts/pr-body.ts`      | Builds the PR body: title, summary, TODO markers, sources, files                                                                                                       |
 | `.github/actions/preview`         | Uploads `dist/` as a Worker version and posts its preview URL on the PR (also used by `deploy.yml` for every PR)                                                       |
+| `workers/slack-relay`             | Cloudflare Worker: Slack message → `repository_dispatch` → ack in the thread; deployed by `deploy.yml`; `slack-manifest.json` creates the Slack app                    |
 
 ## Secrets
 
@@ -23,6 +24,9 @@ Step 1 of the phone-to-blog pipeline. A raw text goes in, a pull request with a 
 | `CLOUDFLARE_API_TOKEN`         | Preview upload (already used by the deploy); the token needs Workers Scripts edit |
 | `CLOUDFLARE_ACCOUNT_ID`        | Same                                                                              |
 | `PIPELINE_PAT`                 | Optional, see "Checks on the PR" below                                            |
+| `SLACK_SIGNING_SECRET`         | Slack relay: request signature check                                              |
+| `SLACK_BOT_TOKEN`              | Slack relay and the workflow's "Report to Slack" step                             |
+| `GH_DISPATCH_TOKEN`            | Slack relay: fine-grained token, Contents read/write on this repo                 |
 
 ## Trigger from the phone
 
@@ -70,21 +74,41 @@ The workflow validates and builds the article before opening the PR, and uploads
 
 `wrangler.jsonc` has `preview_urls: true`. Each PR gets a Worker version (`wrangler versions upload --preview-alias pr-<n>`), which is not deployed to production; the URL is on `workers.dev` and is posted as a PR comment, updated on every push. Canonical URLs and the sitemap inside a preview point to the production domain, which is fine for review.
 
-## Contract for step 2
+## Slack
 
-`repository_dispatch` with `event_type: blog-post` and this `client_payload`:
+Post a message in the Slack channel, get the PR link back in the thread.
+
+```
+Slack channel  --event-->  Worker blog-slack-relay  --repository_dispatch-->  blog-post workflow
+     ^                              |                                              |
+     |<---- "Received" in thread ---+                                              |
+     |<---------------------- "PR ready: … / Preview: …" in thread ----------------+
+```
+
+- `workers/slack-relay/src/index.ts`: verifies Slack's signature (HMAC, 5-minute window), answers the URL challenge, ignores retries, bots, edits and thread replies, accepts only top-level messages from `SLACK_ALLOWED_USER_ID`, calls `POST /repos/<repo>/dispatches` with `event_type: blog-post`, then posts an acknowledgement in the thread. A first line `model: provider/model` picks the model; the rest is the text.
+- The workflow's last step ("Report to Slack", runs even on failure) posts the PR and preview URLs, or the run link, in the same thread using `SLACK_BOT_TOKEN`.
+- `deploy.yml` deploys the Worker on every push to `main` (job "Deploy the Slack relay") and uploads its secrets from the GitHub secrets. It skips the deploy, with a note in the summary, until the three secrets exist.
+- Local run: `npm run relay:dev` with a `workers/slack-relay/.dev.vars` file (ignored by git) holding the three secrets; `npm run check:relay` type-checks it.
+
+`client_payload` sent by the Worker:
 
 ```json
 {
   "text": "…",
   "model": "anthropic/claude-sonnet-5",
-  "title_hint": "",
   "slack_channel": "C0123",
   "slack_thread_ts": "1726650000.000100"
 }
 ```
 
-`model` and `title_hint` are optional. `slack_channel` and `slack_thread_ts` are passed through as job outputs (`slack_channel`, `slack_thread_ts`, next to `pr_url` and `preview_url`) for the step that will post back to Slack.
+### Setup, once
+
+1. **Slack app**: [api.slack.com/apps](https://api.slack.com/apps) → Create New App → From a manifest → pick the workspace → paste `workers/slack-relay/slack-manifest.json` with the `request_url` pointing at your Worker URL (`https://blog-slack-relay.<subdomain>.workers.dev/slack/events`; the subdomain is on the Workers overview page of the Cloudflare dashboard). Slack cannot verify that URL before the Worker is deployed, so if it complains, create the app without the `event_subscriptions` block and add the request URL in Event Subscriptions after step 4.
+2. **Secrets from Slack** (app page): _Basic Information → Signing Secret_ → GitHub secret `SLACK_SIGNING_SECRET`. _Install App → Install to Workspace_, then _Bot User OAuth Token_ (`xoxb-…`) → GitHub secret `SLACK_BOT_TOKEN`.
+3. **GitHub token for the Worker**: GitHub → Settings → Developer settings → Fine-grained tokens → New: this repository only, permission _Contents: Read and write_ (what `repository_dispatch` needs), expiry at most a year → GitHub secret `GH_DISPATCH_TOKEN`. Note the expiry date somewhere; the ack message in Slack will say `401` when it lapses.
+4. **Your Slack member ID**: Slack → your profile → ⋯ → Copy member ID (`U…`) → put it in `vars.SLACK_ALLOWED_USER_ID` of `workers/slack-relay/wrangler.jsonc`, commit, push. The push deploys the Worker.
+5. **Channel**: create `#blog` (public or private), and invite the bot: `/invite @Blog`. If the app was created without event subscriptions, now add the request URL under Event Subscriptions and subscribe the bot to `message.channels` and `message.groups`; save, reinstall if Slack asks.
+6. **Test**: post a short text in `#blog`. Within seconds: "Received…" in the thread. Within ~5 minutes: the PR and preview links.
 
 ## Facts checked while building this
 

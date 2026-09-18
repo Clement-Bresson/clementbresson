@@ -161,3 +161,28 @@ jobs:
           cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           github-token: ${{ env.TOKEN }}
           pr-number: ${{ steps.pr.outputs.number }}
+
+      - name: Report to Slack
+        if: always() && github.event.client_payload.slack_channel != ''
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          CHANNEL: ${{ github.event.client_payload.slack_channel }}
+          THREAD: ${{ github.event.client_payload.slack_thread_ts }}
+          STATUS: ${{ job.status }}
+          PR_URL: ${{ steps.pr.outputs.url }}
+          PREVIEW_URL: ${{ steps.preview.outputs.url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ "$STATUS" = success ]; then
+            text="PR ready: $PR_URL"$'\n'"Preview: $PREVIEW_URL"
+          elif [ -n "$PR_URL" ]; then
+            text="PR opened but the run ended with status $STATUS: $PR_URL"$'\n'"Log: $RUN_URL"
+          else
+            text="The run ended with status $STATUS, no PR."$'\n'"Log: $RUN_URL"
+          fi
+          jq -n --arg c "$CHANNEL" --arg t "$THREAD" --arg x "$text" \
+            '{channel: $c, thread_ts: $t, text: $x}' |
+            curl -sS -X POST https://slack.com/api/chat.postMessage \
+              -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+              -H "Content-Type: application/json; charset=utf-8" \
+              --data @- | jq -r 'if .ok then "posted" else "slack error: " + .error end'
