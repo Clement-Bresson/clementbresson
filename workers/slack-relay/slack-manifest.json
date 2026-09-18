@@ -16,7 +16,7 @@
   },
   "settings": {
     "event_subscriptions": {
-      "request_url": "https://blog-slack-relay.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev/slack/events",
+      "request_url": "https://blog-slack-relay.clement0bresson.workers.dev/slack/events",
       "bot_events": ["message.channels", "message.groups"]
     },
     "org_deploy_enabled": false,
