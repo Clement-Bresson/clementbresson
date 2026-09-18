@@ -98,7 +98,7 @@ GitHub app → Actions → "Blog post" → Run workflow, paste the text. An Open
 - Link other articles with relative URLs: `/blog/<slug>/` in `en.md`, `/fr/blog/<slug>/` in `fr.md`.
 - `draft: true` shows in `npm run dev` but is excluded from the build (`SHOW_DRAFTS=1 npm run build` includes drafts).
 - Scheduling: give a future `pubDate` and push. The article stays out of the build until that day (Europe/Paris); the deploy workflow rebuilds every morning and publishes it.
-- Set `updatedDate` when you revise an article: it feeds `dateModified` and the sitemap.
+- The "Updated" date is derived from git: the day of the last commit that touched the language file (commits before `src/lib/modified-date.ts`'s baseline are ignored). It feeds the post page, `dateModified` and the sitemap, and only shows when later than `pubDate`. Set `updatedDate` in the frontmatter only to override it; uncommitted edits do not count.
 - Everything for SEO and AI search is generated at build: canonical and hreflang tags, Open Graph, JSON-LD (Person, WebSite, Blog, BlogPosting with citations, breadcrumbs), sitemap with `lastmod`, robots.txt allowing AI crawlers, llms.txt, RSS.
 
 ## Deploy (Cloudflare Workers, via GitHub Actions)

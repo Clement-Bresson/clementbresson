@@ -64,7 +64,7 @@ Every article should be woven into the existing ones. Do this on every new artic
 3. Inbound: pick the 1–3 existing articles where the new article is the most natural next read
    (shared tags, a concept the new article explains in depth). In each, link the first natural
    mention in BOTH fr.md and en.md with the right prefix, or add one bridging sentence at the end.
-   Do not touch other content and do not set `updatedDate` for a link-only edit.
+   Do not touch other content and do not set `updatedDate` (it is derived from git).
 4. Never link the article to itself, never link inside headings or code, never link a target that
    does not exist (`check` fails on both). Do not add inbound links to an article scheduled for a
    later day: they would 404 until then (`check` warns). Add them once it is live.
@@ -119,7 +119,8 @@ must be one of the copied images.
 
 ## Updating an existing article
 
-Edit `src/content/blog/<slug>/{fr,en}.md` directly, set `updatedDate` in both, keep both languages in
-sync, then run `node scripts/article.ts check <slug>` and `npm run build`. `check` fails when `pubDate`,
-tags or the draft flag differ between the two files, and warns when `updatedDate`, cover, headings,
-images, code blocks or link targets do.
+Edit `src/content/blog/<slug>/{fr,en}.md` directly and keep both languages in sync; the "Updated"
+date comes from git once the change is committed (set `updatedDate` only to override it). Then run
+`node scripts/article.ts check <slug>` and `npm run build`. `check` fails when `pubDate`, tags or the
+draft flag differ between the two files, and warns when `updatedDate`, cover, headings, images, code
+blocks or link targets do.

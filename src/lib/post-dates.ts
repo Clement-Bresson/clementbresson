@@ -2,6 +2,7 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { updatedDate } from "./modified-date.ts";
 import { isLive } from "./publish-date.ts";
 
 const root = fileURLToPath(new URL("../content/blog/", import.meta.url));
@@ -29,7 +30,9 @@ export function postLastModified(): Map<string, Date> {
       const published = readDate(frontmatter, "pubDate");
       if (!published || Number.isNaN(published.getTime()) || !isLive(published))
         continue;
-      const date = readDate(frontmatter, "updatedDate") ?? published;
+      const date =
+        updatedDate(file, published, readDate(frontmatter, "updatedDate")) ??
+        published;
       if (!Number.isNaN(date.getTime())) out.set(`${lang}/${slug.name}`, date);
     }
   }

@@ -2,6 +2,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { getAbsoluteLocaleUrl, getRelativeLocaleUrl } from "astro:i18n";
 import { tagCopy, tagIds, type TagId } from "../data/tags";
 import { locales, type Locale } from "../i18n";
+import { updatedDate } from "./modified-date.ts";
 import { isLive } from "./publish-date.ts";
 
 export type Post = CollectionEntry<"blog"> & { slug: string; locale: Locale };
@@ -27,7 +28,16 @@ export function getAllPosts(): Promise<Post[]> {
       "blog",
       (e) => includeUnpublished || (!e.data.draft && isLive(e.data.pubDate)),
     );
-    const posts = entries.map((e) => ({ ...e, ...parseId(e.id) }));
+    const posts = entries.map((e) => ({
+      ...e,
+      ...parseId(e.id),
+      data: {
+        ...e.data,
+        updatedDate: e.filePath
+          ? updatedDate(e.filePath, e.data.pubDate, e.data.updatedDate)
+          : e.data.updatedDate,
+      },
+    }));
 
     const bySlug = new Map<string, Set<Locale>>();
     for (const p of posts) {
