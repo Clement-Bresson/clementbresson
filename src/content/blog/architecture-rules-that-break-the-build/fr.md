@@ -58,4 +58,6 @@ Les autres sont en réalité des intentions.
 
 Le même réflexe vaut pour la [séparation des données entre clients d’un SaaS](/fr/blog/multi-tenant-data-isolation-four-levels/) : un tenant omis doit rendre zéro donnée, pas une fuite.
 
+Un [framework opinionated](/fr/blog/opinionated-frameworks-as-ai-harnesses/) applique déjà une partie de ces contraintes avant même que vous en écriviez une seule.
+
 PS : une règle qui passe ne dit pas que la règle est bonne. Réfléchir et faire les bons choix pour le contexte de chaque projet n’est pas en option.

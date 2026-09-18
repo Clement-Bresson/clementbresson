@@ -45,3 +45,5 @@ Règle de placement : plus un contrôle est rapide, plus il doit être à gauche
 Mais tous ces contrôles ne sont pas disponibles partout. Un typage strict donne un capteur. Des [frontières de modules nettes](/fr/blog/architecture-rules-that-break-the-build/) rendent une règle structurelle possible. Sans ces propriétés, le contrôle n’existe pas.
 
 Böckeler appelle ça la harnessability d’une codebase, et elle en tire la conclusion qui fait mal : le harnais est le plus nécessaire là où il est le plus difficile à construire.
+
+Un [framework très opinionated](/fr/blog/opinionated-frameworks-as-ai-harnesses/) achète cette harnessability dès le départ : ses conventions strictes remplissent plusieurs cases avant même la première ligne de code.
