@@ -74,6 +74,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+          OPENCODE_ENABLE_EXA: "1"
           TITLE_HINT: ${{ github.event_name == 'workflow_dispatch' && inputs.title_hint || github.event.client_payload.title_hint }}
         run: |
           prompt="The source text is in .pipeline/input.md. Write the article."

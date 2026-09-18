@@ -30,8 +30,7 @@ Do not ask for slug, description or tags: propose them.
    - Images: reference them as `![alt](./file.jpg)` where they belong in the text.
    - Internal links: see "Cross-linking" below. Relative URLs only: `/blog/<slug>/` in EN,
      `/fr/blog/<slug>/` in FR. Same targets in both languages.
-   - Do not write a Sources section in the body: put sources in the `sources` field. Only include a URL
-     you are certain of; otherwise title + author only.
+   - Do not write a Sources section in the body: put sources in the `sources` field. See "Sources" below.
 3. Translate to the other language faithfully: same structure, headings, lists, links (with the other
    language's path prefix), same images with translated alt text. Natural, idiomatic, "you" in English.
    Keep technical terms in English (harness, test double, Dependency Rule…). "TJM" → "daily rate",
@@ -49,6 +48,15 @@ Do not ask for slug, description or tags: propose them.
 7. Do not commit unless asked. When asked, commit the new `src/content/blog/<slug>/` folder, the existing
    articles you edited for inbound links, and `src/data/tags.json` if a tag was added. Then push; the
    deploy is automatic.
+
+## Sources
+
+Sources are researched, not guessed, and they matter for SEO and AI search. For every product, company,
+person, talk, book or article the text names, search the web for its official page (or the original
+article), fetch the URL to confirm it, then add a `sources` entry (`title`, `author`, `year`, `url`) and
+link the first mention in both bodies to that URL. Never write a URL you have not fetched. When the text
+relies on a figure or a study you cannot find, keep the sentence and add
+`<!-- TODO source: what is missing -->` after the paragraph, in both languages, and say so in the report.
 
 ## Cross-linking
 

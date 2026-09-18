@@ -38,7 +38,7 @@ Every run creates exactly one folder `src/content/blog/<slug>/` with `en.md` and
 
 ## TODO markers
 
-The agent never invents a source, a URL, a figure, a quote or a person. When the text states something that needs a source and gives none, it keeps the sentence and adds, in both languages:
+The agent researches sources online (OpenCode's `websearch`, Exa-backed, enabled by `OPENCODE_ENABLE_EXA=1`, and `webfetch`): every product, company, person, talk or article the text names gets its official page found, fetched, listed in `sources` and linked on first mention. It never writes a URL it could not fetch, nor invents a figure, a quote or a person. When the text relies on something it cannot find a source for, it keeps the sentence and adds, in both languages:
 
 ```markdown
 <!-- TODO source: the 2024 study the paragraph refers to -->

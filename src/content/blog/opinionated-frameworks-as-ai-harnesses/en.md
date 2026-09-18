@@ -3,10 +3,20 @@ title: "Opinionated frameworks are an AI harness"
 description: "AdonisJS is famously opinionated. A talk with Jonathan Serra (AI2H) on why that rigidity gives an AI an extra harness, and an open question."
 pubDate: 2026-09-18
 tags: ["ai-harnesses", "architecture"]
+sources:
+  - title: "AI2H"
+    author: "Jonathan Serra"
+    url: https://ai2h.tech/
+  - title: "AdonisJS"
+    url: https://adonisjs.com/
+  - title: "Harness engineering for coding agent users"
+    author: "Birgitta Böckeler"
+    year: 2026
+    url: https://martinfowler.com/articles/harness-engineering.html
 draft: false
 ---
 
-Today, I was talking with Jonathan Serra, founder of AI2H, about the ongoing shift in the developer's role.
+Today, I was talking with Jonathan Serra, founder of [AI2H](https://ai2h.tech/), about the ongoing shift in the developer's role.
 
 Among the topics we covered:
 
@@ -17,7 +27,7 @@ Among the topics we covered:
 
 ## AdonisJS, or rigidity that pays off
 
-One thing led to another, and we ended up talking about AdonisJS, a framework I have never had the chance to try myself.
+One thing led to another, and we ended up talking about [AdonisJS](https://adonisjs.com/), a framework I have never had the chance to try myself.
 
 AdonisJS, roughly, is a very **opinionated** MVC framework for Node: little room for choice, a lot of imposed conventions.
 
@@ -29,7 +39,7 @@ Of course, the more opinionated a framework is, the more rigid it is. But rigidi
 
 That echoes something I have observed since last year: the more [standardised and strict a codebase](/blog/architecture-rules-that-break-the-build/) is, the less the AI goes off in every direction.
 
-It is one of the best feedforward guides (see Böckeler's matrix) you can give a good harness.
+It is one of the best feedforward guides (see [Böckeler's matrix](https://martinfowler.com/articles/harness-engineering.html)) you can give a good harness.
 
 ## A question for you
 

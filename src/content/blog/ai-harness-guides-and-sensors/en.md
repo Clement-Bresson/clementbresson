@@ -5,9 +5,10 @@ pubDate: 2026-09-07
 tags: ["ai-harnesses"]
 linkedin: https://www.linkedin.com/feed/update/urn:li:activity:7502834032964030465/
 sources:
-  - title: "Article on AI agent harnesses (martinfowler.com)"
+  - title: "Harness engineering for coding agent users"
     author: "Birgitta Böckeler"
     year: 2026
+    url: https://martinfowler.com/articles/harness-engineering.html
   - title: "dependency-cruiser"
     author: "Sander Verweij"
     url: https://github.com/sverweij/dependency-cruiser
@@ -16,7 +17,7 @@ draft: false
 
 A harness is everything in an agent that is not the model.
 
-Birgitta Böckeler (martinfowler.com, April 2026) structures it along two axes.
+[Birgitta Böckeler](https://martinfowler.com/articles/harness-engineering.html) (martinfowler.com, April 2026) structures it along two axes.
 
 ## Axis 1: timing
 
