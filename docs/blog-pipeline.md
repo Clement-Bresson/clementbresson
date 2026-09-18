@@ -107,7 +107,7 @@ Slack channel  --event-->  Worker blog-slack-relay  --repository_dispatch-->  bl
 2. **Secrets from Slack** (app page): _Basic Information → Signing Secret_ → GitHub secret `SLACK_SIGNING_SECRET`. _Install App → Install to Workspace_, then _Bot User OAuth Token_ (`xoxb-…`) → GitHub secret `SLACK_BOT_TOKEN`.
 3. **GitHub token for the Worker**: GitHub → Settings → Developer settings → Fine-grained tokens → New: this repository only, permission _Contents: Read and write_ (what `repository_dispatch` needs), expiry at most a year → GitHub secret `GH_DISPATCH_TOKEN`. Note the expiry date somewhere; the ack message in Slack will say `401` when it lapses.
 4. **Your Slack member ID**: Slack → your profile → ⋯ → Copy member ID (`U…`) → put it in `vars.SLACK_ALLOWED_USER_ID` of `workers/slack-relay/wrangler.jsonc`, commit, push. The push deploys the Worker.
-5. **Channel**: create `#agent-clementbresson-blog-post` (public or private), and invite the bot: `/invite @Blog`. If the app was created without event subscriptions, now add the request URL under Event Subscriptions and subscribe the bot to `message.channels` and `message.groups`; save, reinstall if Slack asks.
+5. **Channel**: create `#agent-clementbresson-blog-post` (public or private), and invite the bot: `/invite @clementbresson.com`. If the app was created without event subscriptions, now add the request URL under Event Subscriptions and subscribe the bot to `message.channels` and `message.groups`; save, reinstall if Slack asks.
 6. **Test**: post a short text in `#agent-clementbresson-blog-post`. Within seconds: "Received…" in the thread. Within ~5 minutes: the PR and preview links.
 
 ## Facts checked while building this

@@ -1,11 +1,11 @@
 {
   "display_information": {
-    "name": "Blog",
-    "description": "Turns a message into a blog article pull request"
+    "name": "clementbresson.com",
+    "description": "Blog article pipeline for clementbresson.com"
   },
   "features": {
     "bot_user": {
-      "display_name": "Blog",
+      "display_name": "clementbresson.com",
       "always_online": false
     }
   },
