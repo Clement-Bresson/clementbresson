@@ -48,3 +48,5 @@ Mais tous ces contrôles ne sont pas disponibles partout. Un typage strict donne
 Böckeler appelle ça la harnessability d’une codebase, et elle en tire la conclusion qui fait mal : le harnais est le plus nécessaire là où il est le plus difficile à construire.
 
 Un [framework très opinionated](/fr/blog/opinionated-frameworks-as-ai-harnesses/) achète cette harnessability dès le départ : ses conventions strictes remplissent plusieurs cases avant même la première ligne de code.
+
+Un [ADR](/fr/blog/architecture-decision-records/) est un guide au même sens : une page écrite avant la décision, pour qu'un humain ou une IA qui lit le dépôt plus tard trouve les règles du jeu, gratuitement.
