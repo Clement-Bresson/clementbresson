@@ -46,6 +46,10 @@ The agent researches sources online (OpenCode's `websearch`, Exa-backed, enabled
 
 The PR body lists every marker. HTML comments are not rendered, but resolve or delete them before merging: add the source to the `sources` frontmatter field, or remove the claim.
 
+## Cost
+
+Every run prints its token usage and cost per model in the run summary (`opencode stats`, priced from models.dev), whatever the provider. For an account-level view, use a dedicated API key named for the pipeline in each provider console (Anthropic Console → Usage & Cost, OpenAI usage page, Google AI Studio): the key's own line is the pipeline's spend.
+
 ## Changing the default model
 
 Edit `default:` under `model` in `.github/workflows/blog-post.yml` and the fallback in the job's `MODEL` env (used by `repository_dispatch`). Ids are `provider/model` as listed on [models.dev](https://models.dev).

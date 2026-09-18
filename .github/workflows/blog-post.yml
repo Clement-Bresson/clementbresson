@@ -83,6 +83,17 @@ jobs:
           fi
           opencode run --agent blog-writer --model "$MODEL" --auto "$prompt" < /dev/null
 
+      - name: Cost of the run
+        if: always()
+        run: |
+          {
+            echo "## Tokens and cost"
+            echo
+            echo '```'
+            opencode stats --models --project "" | sed 's/\x1b\[[0-9;]*[A-Za-z]//g'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Find the new article
         id: article
         run: |
