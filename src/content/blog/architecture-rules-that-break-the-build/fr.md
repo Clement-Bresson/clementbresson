@@ -60,4 +60,6 @@ Le même réflexe vaut pour la [séparation des données entre clients d’un Sa
 
 Un [framework opinionated](/fr/blog/opinionated-frameworks-as-ai-harnesses/) applique déjà une partie de ces contraintes avant même que vous en écriviez une seule.
 
+Un [ADR](/fr/blog/architecture-decision-records/) documente les intentions qui ne peuvent pas devenir une contrainte : ça n'empêchera pas un contournement, mais ça laisse une trace écrite et datée de pourquoi la règle existe.
+
 PS : une règle qui passe ne dit pas que la règle est bonne. Réfléchir et faire les bons choix pour le contexte de chaque projet n’est pas en option.

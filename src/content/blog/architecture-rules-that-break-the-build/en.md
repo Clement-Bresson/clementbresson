@@ -60,4 +60,6 @@ The same reflex applies to [isolating customer data in a SaaS](/blog/multi-tenan
 
 An [opinionated framework](/blog/opinionated-frameworks-as-ai-harnesses/) already enforces some of these constraints before you write a single one yourself.
 
+An [ADR](/blog/architecture-decision-records/) documents the intentions that cannot become a constraint: it will not stop a bypass, but at least it leaves a written, dated trace of why the rule exists.
+
 PS: a rule that passes does not mean the rule is good. Thinking and making the right choices for each project's context is not optional.
