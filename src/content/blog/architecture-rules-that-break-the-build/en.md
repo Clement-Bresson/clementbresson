@@ -58,4 +58,6 @@ The others are actually intentions.
 
 The same reflex applies to [isolating customer data in a SaaS](/blog/multi-tenant-data-isolation-four-levels/): an omitted tenant must return zero rows, not a leak.
 
+An [opinionated framework](/blog/opinionated-frameworks-as-ai-harnesses/) already enforces some of these constraints before you write a single one yourself.
+
 PS: a rule that passes does not mean the rule is good. Thinking and making the right choices for each project's context is not optional.

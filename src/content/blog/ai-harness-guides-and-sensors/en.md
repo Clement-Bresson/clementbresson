@@ -45,3 +45,5 @@ Placement rule: the faster a check is, the further left it belongs. Hook, pre-co
 But not all of these checks are available everywhere. Strict typing gives you a sensor. [Clean module boundaries](/blog/architecture-rules-that-break-the-build/) make a structural rule possible. Without those properties, the check does not exist.
 
 Böckeler calls this the harnessability of a codebase, and draws the conclusion that hurts: the harness is most necessary where it is hardest to build.
+
+A very [opinionated framework](/blog/opinionated-frameworks-as-ai-harnesses/) buys that harnessability upfront: its strict conventions fill several of the boxes before a single line of code is written.
