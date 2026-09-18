@@ -6,7 +6,7 @@
   "workers_dev": true,
   "vars": {
     "GITHUB_REPO": "Clement-Bresson/clementbresson",
-    "SLACK_ALLOWED_USER_ID": "REPLACE_WITH_YOUR_SLACK_MEMBER_ID",
+    "SLACK_ALLOWED_USER_ID": "U09G2765HT8",
   },
   "observability": {
     "enabled": true,
