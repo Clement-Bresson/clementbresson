@@ -58,6 +58,8 @@ Edit `default:` under `model` in `.github/workflows/blog-post.yml` and the fallb
 
 ## Checks on the PR
 
+One-time repository setting, or every run fails at the PR step with "GitHub Actions is not permitted to create or approve pull requests": Settings → Actions → General → Workflow permissions → tick "Allow GitHub Actions to create and approve pull requests".
+
 The workflow validates and builds the article before opening the PR, and uploads the preview itself. When the PR is created with the default `GITHUB_TOKEN`, GitHub does not run other workflows on it: `deploy.yml` will not add its "Build" check or refresh the preview on later pushes to the branch. If you want that, create a fine-grained personal access token with contents and pull requests write on this repo and add it as the `PIPELINE_PAT` secret; the workflow uses it when present.
 
 ## Preview URLs

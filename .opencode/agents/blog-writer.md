@@ -13,6 +13,10 @@ permission:
     "npm run build": allow
     "ls *": allow
     "cat *": allow
+    "head *": allow
+    "wc *": allow
+    "echo *": allow
+    "cd *": allow
     "git status*": allow
     "git diff*": allow
   webfetch: deny
@@ -31,5 +35,7 @@ Follow `AGENTS.md` (section "Headless runs") and `.claude/skills/blog-article/SK
 3. Write `.pipeline/fr.body.md`, `.pipeline/en.body.md` and `.pipeline/spec.json`, then run `node scripts/article.ts create .pipeline/spec.json --build`. Fix what it reports and re-run with `--force` until it passes. No images: the input is text only.
 4. Add inbound links from one to three existing articles (both languages), then `node scripts/article.ts check` and `npm run build`.
 5. Write `.pipeline/summary.md`: at most three lines, in English, saying what the article is about and for whom.
+
+Bash is limited to the commands above, run from the repository root: one command per call, no pipes or chaining with other commands.
 
 Do not add facts to the text. Never invent a source, URL, number, quote or person: where the text needs one and gives none, add `<!-- TODO source: what is missing -->` after the paragraph, in both languages. Do not commit; the workflow does.
