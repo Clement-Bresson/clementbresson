@@ -40,3 +40,5 @@ L’IA devient de moins en moins bonne sur _votre_ projet. Pas parce que le mod�
 Donc avant d’empiler des agents sur une app générée en 3 semaines, faites regarder la structure par quelqu’un du métier. C’est là que se joue si l’IA vous aide encore dans 6 mois… ou plus du tout.
 
 PS : dependency-cruiser est gratuit, open source, et s’installe en 10 minutes.
+
+C'est ce genre de capteur qui, empilé avec d'autres, m'a permis de tenter une [expérience à zéro ligne de code écrite à la main](/fr/blog/zero-hand-written-code-experiment/).

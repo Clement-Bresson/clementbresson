@@ -40,3 +40,5 @@ The AI gets worse and worse on _your_ project. Not because the model is degradin
 So before stacking agents on an app generated in 3 weeks, have someone who does this for a living look at the structure. That is what decides whether AI is still helping you in 6 months… or not at all.
 
 PS: dependency-cruiser is free, open source, and installs in 10 minutes.
+
+Sensors like this one, stacked with others, are what let me attempt a [zero hand-written code experiment](/blog/zero-hand-written-code-experiment/).

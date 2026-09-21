@@ -50,3 +50,5 @@ Böckeler appelle ça la harnessability d’une codebase, et elle en tire la con
 Un [framework très opinionated](/fr/blog/opinionated-frameworks-as-ai-harnesses/) achète cette harnessability dès le départ : ses conventions strictes remplissent plusieurs cases avant même la première ligne de code.
 
 Un [ADR](/fr/blog/architecture-decision-records/) est un guide au même sens : une page écrite avant la décision, pour qu'un humain ou une IA qui lit le dépôt plus tard trouve les règles du jeu, gratuitement.
+
+Récit concret de ce que ça donne quand on pousse ces quatre cases à leur maximum : [zéro ligne de code écrite à la main](/fr/blog/zero-hand-written-code-experiment/).
