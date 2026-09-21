@@ -63,3 +63,5 @@ Un [framework opinionated](/fr/blog/opinionated-frameworks-as-ai-harnesses/) app
 Un [ADR](/fr/blog/architecture-decision-records/) documente les intentions qui ne peuvent pas devenir une contrainte : ça n'empêchera pas un contournement, mais ça laisse une trace écrite et datée de pourquoi la règle existe.
 
 PS : une règle qui passe ne dit pas que la règle est bonne. Réfléchir et faire les bons choix pour le contexte de chaque projet n’est pas en option.
+
+J'ai poussé ce réflexe à l'extrême dans une [expérience à zéro ligne de code écrite à la main](/fr/blog/zero-hand-written-code-experiment/).

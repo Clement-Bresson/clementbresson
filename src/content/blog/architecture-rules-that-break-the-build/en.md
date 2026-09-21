@@ -63,3 +63,5 @@ An [opinionated framework](/blog/opinionated-frameworks-as-ai-harnesses/) alread
 An [ADR](/blog/architecture-decision-records/) documents the intentions that cannot become a constraint: it will not stop a bypass, but at least it leaves a written, dated trace of why the rule exists.
 
 PS: a rule that passes does not mean the rule is good. Thinking and making the right choices for each project's context is not optional.
+
+I pushed this reflex to the extreme in a [zero hand-written code experiment](/blog/zero-hand-written-code-experiment/).
